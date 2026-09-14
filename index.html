@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f2" />
+    <meta
+      name="description"
+      content="Clarora 是开源的本地优先语言学习客户端。用闪卡、逐句听力和自定义 AI，把你喜欢的内容变成每天的小进步。支持 macOS、Windows、Android 和 iOS 客户端源码。"
+    />
+    <meta property="og:title" content="Clarora — 让每一点学习，更清晰" />
+    <meta
+      property="og:description"
+      content="你的内容，你的节奏。开源、本地优先的语言学习客户端。"
+    />
+    <meta property="og:type" content="website" />
+    <title>Clarora — 让每一点学习，更清晰</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./config.js" defer></script>
+    <script src="./site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳转到主要内容</a>
+    <header class="header wrap">
+      <a class="brand" href="#" aria-label="Clarora 首页"
+        ><img src="./favicon.svg" width="33" height="33" alt="" /><span
+          >clarora<span class="brand-dot">.</span></span
+        ></a
+      >
+      <nav aria-label="主导航">
+        <a href="#features">认识 Clarora</a><a href="#guide">开始使用</a
+        ><a href="#faq">常见问题</a>
+      </nav>
+      <a class="nav-cta" href="#download"
+        >获取客户端 <span aria-hidden="true">↗</span></a
+      >
+    </header>
+
+    <main id="main">
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="status-dot"></span> OPEN SOURCE. OPEN POSSIBILITIES.
+          </div>
+          <h1 id="hero-title">
+            让每一点学习，<br /><span class="accent-word"
+              >更清晰。<svg viewBox="0 0 420 20" aria-hidden="true">
+                <path d="M4 14C116 1 290 0 414 10" /></svg
+            ></span>
+          </h1>
+          <p class="hero-description">
+            一段想听懂的音频，一个想记住的单词。<br />把你喜欢的内容，变成每天看得见的小进步。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#download"
+              >找到你的客户端 <span aria-hidden="true">↗</span></a
+            ><a
+              class="text-link repo-link"
+              href="https://github.com/a49a/clarora"
+              target="_blank"
+              rel="noopener noreferrer"
+              >查看开源代码 <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="hero-notes">
+            <span><i aria-hidden="true">✓</i> 无需注册</span
+            ><span><i aria-hidden="true">✓</i> 本地优先</span
+            ><span><i aria-hidden="true">✓</i> 按自己的节奏</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <span class="floating-note"
+            ><span aria-hidden="true">✦</span> A little clearer, every
+            day.</span
+          >
+          <div class="app-window" aria-label="Clarora 功能交互示意">
+            <div class="window-bar">
+              <span class="window-dots" aria-hidden="true"
+                ><i></i><i></i><i></i></span
+              ><span>Clarora</span><span class="demo-label">交互示意</span>
+            </div>
+            <div class="app-body">
+              <aside class="app-sidebar">
+                <span class="mini-brand">c<span>·</span></span
+                ><span class="side-icon active" aria-hidden="true">▦</span
+                ><span class="side-icon" aria-hidden="true">▤</span
+                ><span class="side-icon" aria-hidden="true">♫</span
+                ><span class="side-icon" aria-hidden="true">◷</span
+                ><span class="sidebar-bottom" aria-hidden="true">☼</span>
+              </aside>
+              <div class="app-main">
+                <div class="app-heading">
+                  <div>
+                    <span class="micro">A MOMENT FOR YOURSELF</span>
+                    <h2>今天，也学一点。</h2>
+                  </div>
+                  <span class="avatar">C</span>
+                </div>
+                <div
+                  class="demo-tabs"
+                  role="tablist"
+                  aria-label="体验客户端功能"
+                >
+                  <button
+                    role="tab"
+                    id="tab-flash"
+                    aria-controls="panel-flash"
+                    aria-selected="true"
+                    data-demo="flash"
+                  >
+                    闪卡复习</button
+                  ><button
+                    role="tab"
+                    id="tab-listen"
+                    aria-controls="panel-listen"
+                    aria-selected="false"
+                    tabindex="-1"
+                    data-demo="listen"
+                  >
+                    逐句听力</button
+                  ><button
+                    role="tab"
+                    id="tab-ai"
+                    aria-controls="panel-ai"
+                    aria-selected="false"
+                    tabindex="-1"
+                    data-demo="ai"
+                  >
+                    AI 助手
+                  </button>
+                </div>
+                <div
+                  class="demo-panel"
+                  id="panel-flash"
+                  role="tabpanel"
+                  aria-labelledby="tab-flash"
+                >
+                  <div class="flash-top">
+                    <span class="tiny-tag">每日一词</span
+                    ><button
+                      class="icon-button"
+                      id="favorite"
+                      aria-label="收藏示例单词"
+                      aria-pressed="false"
+                    >
+                      ♡
+                    </button>
+                  </div>
+                  <div class="word-content">
+                    <span class="word-type">adjective</span>
+                    <h3>luminous</h3>
+                    <span class="pronunciation">/ˈluːmɪnəs/</span>
+                    <p>A luminous idea can light up your day.</p>
+                    <p class="word-answer" id="word-answer" hidden>
+                      发光的，明亮的<br /><small
+                        >一个闪光的想法，能点亮你的一天。</small
+                      >
+                    </p>
+                  </div>
+                  <button
+                    class="reveal-button"
+                    id="reveal"
+                    aria-expanded="false"
+                    aria-controls="word-answer"
+                  >
+                    想一想，再看释义 <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+                <div
+                  class="demo-panel listen-panel"
+                  id="panel-listen"
+                  role="tabpanel"
+                  aria-labelledby="tab-listen"
+                  hidden
+                >
+                  <span class="tiny-tag">逐句理解 · 示例字幕</span>
+                  <div class="waveform" aria-hidden="true"></div>
+                  <p class="listening-line">
+                    Small steps lead to <mark>meaningful</mark> change.
+                  </p>
+                  <p class="listen-translation">
+                    小小的步伐，也能带来有意义的改变。
+                  </p>
+                  <div class="playback">
+                    <button
+                      id="play-demo"
+                      class="play-button"
+                      aria-label="播放字幕进度演示（无音频）"
+                      aria-pressed="false"
+                    >
+                      ▶
+                    </button>
+                    <div class="progress-track">
+                      <span id="demo-progress"></span>
+                    </div>
+                    <span id="demo-time">0:00</span
+                    ><span class="speed">1.0×</span>
+                  </div>
+                  <p class="demo-footnote">字幕进度演示，不播放音频</p>
+                </div>
+                <div
+                  class="demo-panel ai-panel"
+                  id="panel-ai"
+                  role="tabpanel"
+                  aria-labelledby="tab-ai"
+                  hidden
+                >
+                  <span class="tiny-tag">✦ 理解，再记住</span>
+                  <p class="ai-question">这里的 luminous 可以形容想法吗？</p>
+                  <div class="ai-answer">
+                    <span class="ai-spark">✦</span>
+                    <p>
+                      可以。除了“发光的”，它也可以形容一个想法<strong>清晰而有启发性</strong>。<br /><span
+                        >试着把它和你自己的一个好点子联系起来。</span
+                      >
+                    </p>
+                  </div>
+                  <p class="demo-footnote">
+                    预设问答示例 · 客户端可连接你自己的 AI 服务
+                  </p>
+                </div>
+                <div class="app-bottom">
+                  <span><i class="status-dot"></i> 属于你的学习时刻</span
+                  ><span
+                    >一点一点，向前走 <span aria-hidden="true">↗</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="local-note">
+            <span class="local-note-icon" aria-hidden="true">⌂</span>
+            <div>
+              <strong>你的资料，留在你的设备。</strong
+              ><span>Local first. Always yours.</span>
+            </div>
+            <span class="note-check" aria-hidden="true">✓</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="platform-strip wrap">
+        <span>在熟悉的设备上，继续学习</span>
+        <div>
+          <span>macOS</span><i>·</i><span>Windows</span><i>·</i
+          ><span>Android</span><i>·</i><span>iOS</span>
+        </div>
+        <a href="#download">查看平台状态 <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <section
+        class="features wrap section"
+        id="features"
+        aria-labelledby="features-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MADE FOR YOUR EVERYDAY</p>
+            <h2 id="features-title">把「想学」，<br />变成「正在学」。</h2>
+          </div>
+          <p>
+            从自己的内容出发，让听、记、理解连在一起。<br />少一点来回切换，多一点真正的收获。
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">▤</div>
+            <h3>记住的不止是单词</h3>
+            <p>
+              单词、音频片段、AI
+              问答都能成为闪卡。用计划复习，在合适的时候再次遇见。
+            </p>
+            <div class="card-art flash-art" aria-hidden="true">
+              <span class="back-card"></span>
+              <div class="small-flash">
+                <span>MAKE IT YOURS</span><strong>little by little</strong>
+                <p>一点一点，积少成多。</p>
+                <i>↗</i>
+              </div>
+            </div>
+            <span class="feature-caption">闪卡 · 计划复习 · 内容收藏</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">♫</div>
+            <h3>听懂每一个小细节</h3>
+            <p>
+              跟着逐句字幕听，调整倍速，反复循环。把值得回味的一句，收藏进自己的资料库。
+            </p>
+            <div class="card-art audio-art" aria-hidden="true">
+              <div class="audio-bars"></div>
+              <div class="audio-caption">
+                <span>Every small step</span><strong>counts.</strong>
+              </div>
+              <div class="mini-playback">
+                <span>↺</span><span>◀</span><b>Ⅱ</b><span>▶</span
+                ><span>1.0×</span>
+              </div>
+            </div>
+            <span class="feature-caption">逐句字幕 · 倍速循环 · 片段收藏</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">✦</div>
+            <h3>让好奇心多走一步</h3>
+            <p>
+              不懂就问，顺手理解。连接自己的 AI
+              服务，解释语句、翻译字幕，或把图片变成文字。
+            </p>
+            <div class="card-art ai-art" aria-hidden="true">
+              <span class="prompt-pill"
+                >这句话，还可以怎么表达？ <i>↗</i></span
+              >
+              <div class="mini-answer">
+                <span>✦</span>
+                <div>
+                  <i></i><i></i><i></i
+                  ><span class="answer-tag">理解，比死记更有用。</span>
+                </div>
+              </div>
+            </div>
+            <span class="feature-caption">AI 问答 · 翻译 · OCR · 跟读</span>
+          </article>
+        </div>
+        <div class="extras">
+          <span>还有，让学习更自在的小工具</span>
+          <div>
+            <span>◷ 番茄钟</span><span>◌ 冥想计时</span><span>↗ 学习统计</span
+            ><span>☼ 多款主题</span><span>✧ 词汇关系图</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="ownership wrap" aria-labelledby="ownership-title">
+        <div class="ownership-art" aria-hidden="true">
+          <div class="ownership-orbit"></div>
+          <div class="own-file file-one">Aa<span>我的单词</span></div>
+          <div class="own-file file-two">♫<span>我的音频</span></div>
+          <div class="own-core">
+            <img src="./favicon.svg" alt="" width="68" height="68" />
+          </div>
+          <span class="own-label">YOUR DEVICE. YOUR SPACE.</span>
+        </div>
+        <div class="ownership-copy">
+          <p class="eyebrow">A SPACE THAT’S TRULY YOURS</p>
+          <h2 id="ownership-title">学习属于你。<br />资料也是。</h2>
+          <p>
+            本地保存，无需注册账号就能开始。想换一台设备？把资料备份到自己的 S3
+            或 OSS 存储，再在另一端手动合并。
+          </p>
+          <div class="ownership-tags">
+            <span>本地学习</span><span>自有存储备份</span
+            ><span>开源客户端</span>
+          </div>
+          <a href="#faq" class="text-link"
+            >了解数据与同步 <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+
+      <section
+        class="section wrap guide"
+        id="guide"
+        aria-labelledby="guide-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR FIRST SMALL STEP</p>
+            <h2 id="guide-title">从你感兴趣的内容开始。</h2>
+          </div>
+          <p>不用准备好一切。<br />一个单词，一段音频，就足够。</p>
+        </div>
+        <div class="steps">
+          <article>
+            <span class="step-number">01</span>
+            <h3>准备客户端</h3>
+            <p>选择你的设备，查看平台状态与构建指南。客户端源码已提供。</p>
+            <a href="#download">选择平台 ↗</a>
+          </article>
+          <article>
+            <span class="step-number">02</span>
+            <h3>带上自己的内容</h3>
+            <p>
+              导入文本词卡，或在支持的平台导入音频与字幕。从一小份熟悉的材料开始。
+            </p>
+          </article>
+          <article>
+            <span class="step-number">03</span>
+            <h3>找到舒服的节奏</h3>
+            <p>
+              复习几张闪卡，精听一小段。如果需要，再配置 AI 服务或跨设备备份。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="download-section"
+        id="download"
+        aria-labelledby="download-title"
+      >
+        <div class="wrap">
+          <div class="download-heading">
+            <p class="eyebrow">TAKE CLARORA WITH YOU</p>
+            <h2 id="download-title">下一点进步，<br />就在你的设备上。</h2>
+            <p>四个平台的客户端源码，正在这里生长。</p>
+          </div>
+          <div class="download-grid">
+            <article class="download-card">
+              <span class="platform-symbol" aria-hidden="true">⌘</span>
+              <h3>macOS</h3>
+              <p>留一段专注的桌面时光</p>
+              <span class="release-status" data-status="macos"
+                >安装包待发布</span
+              ><a
+                class="platform-download"
+                data-download="macos"
+                href="#build-guide"
+                >查看构建指南 <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="download-card">
+              <span class="platform-symbol windows-symbol" aria-hidden="true"
+                >⊞</span
+              >
+              <h3>Windows</h3>
+              <p>在熟悉的电脑上继续</p>
+              <span class="release-status" data-status="windows"
+                >安装包待发布</span
+              ><a
+                class="platform-download"
+                data-download="windows"
+                href="#build-guide"
+                >查看构建指南 <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="download-card">
+              <span class="platform-symbol" aria-hidden="true"
+                ><svg viewBox="0 0 32 32">
+                  <path
+                    d="M8 13a8 8 0 0 1 16 0M8 13h16v11H8zM11 6L9 3m12 3 2-3M5 14v8m22-8v8M12 24v5m8-5v5"
+                  />
+                  <circle cx="12" cy="10" r=".6" />
+                  <circle cx="20" cy="10" r=".6" /></svg
+              ></span>
+              <h3>Android</h3>
+              <p>把学习装进口袋</p>
+              <span class="release-status" data-status="android"
+                >安装包待发布</span
+              ><a
+                class="platform-download"
+                data-download="android"
+                href="#build-guide"
+                >查看构建指南 <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="download-card">
+              <span class="platform-symbol" aria-hidden="true">▯</span>
+              <h3>iOS</h3>
+              <p>给零碎时间一点意义</p>
+              <span class="release-status" data-status="ios">安装包待发布</span
+              ><a
+                class="platform-download"
+                data-download="ios"
+                href="#build-guide"
+                >查看构建指南 <span aria-hidden="true">↗</span></a
+              >
+            </article>
+          </div>
+          <div class="build-guide" id="build-guide">
+            <div class="build-guide-top">
+              <h3>从源码构建</h3>
+              <div class="build-tabs" role="tablist" aria-label="平台构建指南">
+                <button
+                  role="tab"
+                  id="build-tab-macos"
+                  aria-selected="true"
+                  aria-controls="build-panel"
+                  data-platform="macos"
+                >
+                  macOS</button
+                ><button
+                  role="tab"
+                  id="build-tab-windows"
+                  aria-selected="false"
+                  aria-controls="build-panel"
+                  tabindex="-1"
+                  data-platform="windows"
+                >
+                  Windows</button
+                ><button
+                  role="tab"
+                  id="build-tab-android"
+                  aria-selected="false"
+                  aria-controls="build-panel"
+                  tabindex="-1"
+                  data-platform="android"
+                >
+                  Android</button
+                ><button
+                  role="tab"
+                  id="build-tab-ios"
+                  aria-selected="false"
+                  aria-controls="build-panel"
+                  tabindex="-1"
+                  data-platform="ios"
+                >
+                  iOS
+                </button>
+              </div>
+            </div>
+            <div
+              id="build-panel"
+              role="tabpanel"
+              aria-labelledby="build-tab-macos"
+            >
+              <p id="build-requirements">
+                需要 Node.js 24、Xcode、CocoaPods 和
+                libmpv。克隆源码后，在仓库根目录执行：
+              </p>
+              <div class="code-box">
+                <pre><code id="build-command">npm run setup
+npm start
+# 另开一个终端
+npm run macos</code></pre>
+                <button id="copy-command" aria-label="复制构建命令">
+                  复制命令
+                </button>
+              </div>
+              <p class="build-note">
+                各平台能力有所差异，源码可构建不等于完成设备验收。<a
+                  id="platform-docs"
+                  href="https://github.com/a49a/clarora/blob/master/docs/platform-builds.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >阅读详细平台说明 ↗</a
+                >
+              </p>
+            </div>
+            <p id="copy-status" class="sr-only" role="status"></p>
+          </div>
+          <noscript
+            ><p class="noscript-note">
+              完整的四平台构建步骤见
+              <a href="https://github.com/a49a/clarora">Clarora 源码仓库</a>。
+            </p></noscript
+          >
+        </div>
+      </section>
+
+      <section class="faq section wrap" id="faq" aria-labelledby="faq-title">
+        <div>
+          <p class="eyebrow">A FEW THINGS TO KNOW</p>
+          <h2 id="faq-title">开始之前，<br />你可能想知道。</h2>
+          <p>保持简单，也把事情说清楚。</p>
+        </div>
+        <div class="faq-items">
+          <details open>
+            <summary>
+              需要注册或开通会员吗？<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              不需要 Clarora 账号，本地学习功能可以直接使用。AI
+              功能需要配置你自己的模型服务，相关费用由所选服务提供方决定。
+            </p>
+          </details>
+          <details>
+            <summary>可以离线学习吗？<span aria-hidden="true">+</span></summary>
+            <p>
+              已经导入的词卡、音频和字幕可用于本地学习。AI
+              功能需要连接你配置的服务；云存储备份也需要联网。
+            </p>
+          </details>
+          <details>
+            <summary>
+              不同设备之间怎么同步？<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              在各设备配置相同的 S3 兼容存储或阿里云
+              OSS。一端手动备份，另一端读取版本并合并。目前不是自动实时同步，也不会自动传播删除；本机已有内容优先，复习进度采用较晚的评分。
+            </p>
+          </details>
+          <details>
+            <summary>
+              我的资料和密钥存在哪里？<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              学习资料保存在设备本地，备份时上传到你配置的对象存储。AI
+              请求会把相关内容发送至你选择的模型服务。凭证目前保存在本机应用数据库，不进入云端备份；云端备份使用
+              HTTPS，尚无端到端加密。
+            </p>
+          </details>
+          <details>
+            <summary>
+              四个平台的功能完全相同吗？<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              共享学习页面和数据模型，但原生能力有所差异。例如命令导入仅在 macOS
+              提供，iOS
+              的音频学习库通过备份合并获得。具体能力和构建条件请查看平台说明。
+            </p>
+          </details>
+          <details>
+            <summary>
+              有网页版学习应用吗？<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              目前专注于 macOS、Windows、Android 和 iOS
+              客户端。本网站用于介绍与使用指引，上方交互是功能示意，不会保存你的学习资料。
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="closing wrap">
+        <span class="closing-spark" aria-hidden="true">✳</span>
+        <h2>不用一次学会很多。<br />今天，清晰一点就好。</h2>
+        <a class="button primary" href="#download"
+          >和 Clarora 一起开始 <span aria-hidden="true">↗</span></a
+        >
+        <p>Little moments. Lasting progress.</p>
+      </section>
+    </main>
+    <footer class="footer wrap">
+      <a class="brand" href="#"
+        ><img src="./favicon.svg" width="29" height="29" alt="" /><span
+          >clarora.</span
+        ></a
+      >
+      <p>你的内容，你的节奏。</p>
+      <div>
+        <a
+          class="repo-link"
+          href="https://github.com/a49a/clarora"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub ↗</a
+        ><a href="#guide">使用指南</a
+        ><span>© <span id="year">2026</span> Clarora</span>
+      </div>
+    </footer>
+  </body>
+</html>

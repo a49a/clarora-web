@@ -1,0 +1,12 @@
+{
+  "name": "clarora-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node --check site.js && node --check config.js && node --check scripts/build.mjs && node --check scripts/serve.mjs"
+  }
+}
