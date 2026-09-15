@@ -40,6 +40,17 @@ function activateDemo(name) {
 $$("[data-demo]").forEach((button) =>
   button.addEventListener("click", () => activateDemo(button.dataset.demo)),
 );
+function activateTutorial(name) {
+  $$("[data-tutorial]").forEach((button) => {
+    const active = button.dataset.tutorial === name;
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+    $(`#tut-panel-${button.dataset.tutorial}`).hidden = !active;
+  });
+}
+$$("[data-tutorial]").forEach((button) =>
+  button.addEventListener("click", () => activateTutorial(button.dataset.tutorial)),
+);
 $("#reveal").addEventListener("click", () => {
   const answer = $("#word-answer");
   answer.hidden = !answer.hidden;

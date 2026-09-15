@@ -44,7 +44,7 @@
       >
       <nav aria-label="主导航">
         <a href="#features">认识 Clarora</a><a href="#guide">开始使用</a
-        ><a href="#faq">常见问题</a>
+        ><a href="#tutorial">使用教学</a><a href="#faq">常见问题</a>
       </nav>
       <a class="nav-cta" href="#download"
         >获取客户端 <span aria-hidden="true">↗</span></a
@@ -407,6 +407,79 @@
             </p>
           </article>
         </div>
+      </section>
+
+      <section
+        class="tutorial section wrap"
+        id="tutorial"
+        aria-labelledby="tutorial-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR DAILY WORKFLOW</p>
+            <h2 id="tutorial-title">五个场景，学会日常使用。</h2>
+          </div>
+          <p>
+            从导入内容到离线字幕、跟读评分，<br />每一步都在你的设备上完成。
+          </p>
+        </div>
+        <div class="tutorial-tabs" role="tablist" aria-label="使用教学">
+          <button role="tab" id="tut-tab-import" aria-selected="true" aria-controls="tut-panel-import" data-tutorial="import">
+            导入内容</button
+          ><button role="tab" id="tut-tab-subtitles" aria-selected="false" aria-controls="tut-panel-subtitles" tabindex="-1" data-tutorial="subtitles">
+            字幕与翻译</button
+          ><button role="tab" id="tut-tab-ai" aria-selected="false" aria-controls="tut-panel-ai" tabindex="-1" data-tutorial="ai">
+            AI 学习</button
+          ><button role="tab" id="tut-tab-speaking" aria-selected="false" aria-controls="tut-panel-speaking" tabindex="-1" data-tutorial="speaking">
+            跟读练习</button
+          ><button role="tab" id="tut-tab-backup" aria-selected="false" aria-controls="tut-panel-backup" tabindex="-1" data-tutorial="backup">
+            备份与同步
+          </button>
+        </div>
+        <div class="tutorial-panel" id="tut-panel-import" role="tabpanel" aria-labelledby="tut-tab-import">
+          <ol class="tutorial-steps">
+            <li><strong>导入词卡：</strong>首页闪卡 → 「学习选项」导入文本词卡，每行一个单词，支持 Tab、逗号、<code> - </code> 等分隔符，<code>#</code> 开头的行会被忽略。</li>
+            <li><strong>整目录换卡组：</strong>macOS 可用「导入目录」，以目录为唯一来源整体替换卡组；删掉已学会的单词后重新导入，App 内同步消失。</li>
+            <li><strong>导入音频：</strong>音频管理 → 添加音频，使用系统文件选择器选择 MP3/M4A/WAV 等；macOS 还支持目录批量导入和命令导入。</li>
+            <li><strong>导入字幕：</strong>字幕支持 SRT / VTT / TXT（TXT 按行估算时间轴），也可直接用「AI 生成字幕」。</li>
+          </ol>
+        </div>
+        <div class="tutorial-panel" id="tut-panel-subtitles" role="tabpanel" aria-labelledby="tut-tab-subtitles" hidden>
+          <ol class="tutorial-steps">
+            <li><strong>下载端侧模型：</strong>设置 → 字幕转写引擎 → 选择模型并下载。SenseVoice 支持中英日韩粤（自动检测语言），Whisper .en 模型适合纯英文；转写完全离线，音频不上传。</li>
+            <li><strong>生成字幕：</strong>听力页或音频管理点「AI 生成字幕」，稍等片刻即可得到带时间轴的字幕。</li>
+            <li><strong>翻译成中文：</strong>点「翻译」生成中英双语字幕——翻译使用「AI 服务」里你配置的聊天模型，逐句对齐原时间轴。</li>
+            <li><strong>收藏片段：</strong>截取喜欢的句子收藏为听力闪卡，复习时自动播放该段音频。</li>
+          </ol>
+        </div>
+        <div class="tutorial-panel" id="tut-panel-ai" role="tabpanel" aria-labelledby="tut-tab-ai" hidden>
+          <ol class="tutorial-steps">
+            <li><strong>配置 AI 服务：</strong>设置 → AI 服务，填写 OpenAI 兼容的 Base URL、API Key 和聊天模型；也可以指向本机运行的开源模型服务。</li>
+            <li><strong>随选随问：</strong>点右下角「✦ AI 助手」，当前学习内容自动成为引用；选中字幕右键提问（macOS），回答支持流式输出。</li>
+            <li><strong>存为卡片：</strong>把有用的回答「存为 AI 问答卡」，正面是问题与原文，背面是完整回答，进入 SM-2 复习队列。</li>
+            <li><strong>AI 标重点：</strong>听力页「标重点」让 AI 圈出重点词汇，字幕中以高亮标出，点击任意一条跳到对应句子播放。</li>
+          </ol>
+        </div>
+        <div class="tutorial-panel" id="tut-panel-speaking" role="tabpanel" aria-labelledby="tut-tab-speaking" hidden>
+          <ol class="tutorial-steps">
+            <li><strong>录一句跟读：</strong>听力页点「🎤 跟读」，朗读当前句子，播放自动暂停，录完自动转写。</li>
+            <li><strong>对齐评分：</strong>基于识别文本对齐给出完整度 / 准确度 / 语速，并列出漏读、读错与多读的词（识别由端侧引擎或你的转写 API 完成）。</li>
+            <li><strong>教练点评：</strong>AI 根据原文与识别结果给出简短练习建议，只评价文本，不推断发音音质。</li>
+            <li><strong>追踪进步：</strong>跟读记录保存在本机并随资料备份，统计页可看最近 20 次的准确度趋势。</li>
+          </ol>
+        </div>
+        <div class="tutorial-panel" id="tut-panel-backup" role="tabpanel" aria-labelledby="tut-tab-backup" hidden>
+          <ol class="tutorial-steps">
+            <li><strong>准备存储：</strong>设置 → 同步与备份，配置自己的 S3 兼容存储或阿里云 OSS（Bucket + 前缀 + 专用密钥）。不需要 Clarora 账号或服务器。</li>
+            <li><strong>备份本机：</strong>点「备份本机资料」，词卡、音频附件、字幕、收藏、复习计划与统计打包为完整版本上传。</li>
+            <li><strong>换机合并：</strong>新设备配置相同存储位置，读取版本列表后「合并到本机」；复习进度取较晚评分，本机已有内容优先。</li>
+            <li><strong>边界须知：</strong>手动版本备份，不自动传播删除；凭证只存本机应用数据库；云端传输走 HTTPS，暂无端到端加密。</li>
+          </ol>
+        </div>
+        <p class="build-note">
+          各平台功能有所差异（如命令导入仅 macOS 提供），细节见
+          <a id="tutorial-platform-docs" class="repo-docs-link" href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md" target="_blank" rel="noopener noreferrer">平台说明 ↗</a>。
+        </p>
       </section>
 
       <section
