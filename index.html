@@ -14,8 +14,22 @@
       content="你的内容，你的节奏。开源、本地优先的语言学习客户端。"
     />
     <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://a49a.github.io/clarora-web/"
+    />
+    <link
+      rel="canonical"
+      href="https://a49a.github.io/clarora-web/"
+    />
     <title>Clarora — 让每一点学习，更清晰</title>
-    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./apple-touch-icon.png"
+    />
     <link rel="stylesheet" href="./styles.css" />
     <script src="./config.js" defer></script>
     <script src="./site.js" defer></script>
@@ -95,7 +109,7 @@
                 <div class="app-heading">
                   <div>
                     <span class="micro">A MOMENT FOR YOURSELF</span>
-                    <h2>今天，也学一点。</h2>
+                    <div class="demo-heading">今天，也学一点。</div>
                   </div>
                   <span class="avatar">C</span>
                 </div>
@@ -151,7 +165,7 @@
                   </div>
                   <div class="word-content">
                     <span class="word-type">adjective</span>
-                    <h3>luminous</h3>
+                    <div class="word-title">luminous</div>
                     <span class="pronunciation">/ˈluːmɪnəs/</span>
                     <p>A luminous idea can light up your day.</p>
                     <p class="word-answer" id="word-answer" hidden>
@@ -515,6 +529,7 @@
               role="tabpanel"
               aria-labelledby="build-tab-macos"
             >
+              <!-- 无 JS 时的默认文案（macOS），与 site.js 中 guides 对象的 macos 项保持同步 -->
               <p id="build-requirements">
                 需要 Node.js 24、Xcode、CocoaPods 和
                 libmpv。克隆源码后，在仓库根目录执行：

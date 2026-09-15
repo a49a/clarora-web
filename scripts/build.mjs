@@ -9,6 +9,8 @@ for (const file of [
   "site.js",
   "config.js",
   "favicon.svg",
+  "favicon.png",
+  "apple-touch-icon.png",
 ]) {
   await copyFile(new URL(file, root), new URL(file, out));
 }

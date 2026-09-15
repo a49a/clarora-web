@@ -69,9 +69,19 @@ for (const [selector, count] of [
     container.append(bar);
   }
 }
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
 $("#play-demo").addEventListener("click", () => {
   if (playing) return stopPlayback();
   if (elapsed >= 8) elapsed = 0;
+  if (reduceMotion) {
+    elapsed = 8;
+    $("#demo-progress").style.width = "100%";
+    $("#demo-time").textContent = "0:08";
+    stopPlayback();
+    return;
+  }
   playing = true;
   $("#play-demo").textContent = "Ⅱ";
   $("#play-demo").setAttribute("aria-pressed", "true");
@@ -87,6 +97,7 @@ document.addEventListener("visibilitychange", () => {
   if (document.hidden) stopPlayback();
 });
 
+// guides 的 macOS 项与 index.html #build-panel 中无 JS 的默认文案保持同步。
 const guides = {
   macos: {
     requirements:

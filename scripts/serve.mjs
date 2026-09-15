@@ -8,6 +8,7 @@ const types = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".png": "image/png",
 };
 const allowed = new Set([
   "/index.html",
@@ -15,6 +16,8 @@ const allowed = new Set([
   "/site.js",
   "/config.js",
   "/favicon.svg",
+  "/favicon.png",
+  "/apple-touch-icon.png",
 ]);
 const port = Number(process.env.PORT || 4173);
 http
