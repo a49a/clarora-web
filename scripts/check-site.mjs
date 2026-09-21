@@ -2,11 +2,19 @@
 // 用法:npm run check(构建后运行,检查 dist/ 与源码一致性)。
 import fs from "node:fs";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const root = path.resolve(import.meta.dirname, "..");
 let failures = 0;
 const fail = (message) => { console.error(`✗ ${message}`); failures += 1; };
 const pass = (message) => console.log(`✓ ${message}`);
+
+// 0) 交互脚本语法检查(保留原有 node --check)
+for (const script of ["site.js"]) {
+  const result = spawnSync(process.execPath, ["--check", path.join(root, script)], { encoding: "utf8" });
+  if (result.status !== 0) fail(`${script} 语法错误:${result.stderr}`);
+  else pass(`${script} 语法正常`);
+}
 
 function read(file) {
   return fs.readFileSync(path.join(root, file), "utf8");
@@ -69,3 +77,30 @@ if (failures > 0) {
   process.exit(1);
 }
 console.log("\n官网静态检查全部通过");
+
+// 7) HTML 下载链接与 config 一致,且必须为固定版本(而非 latest)
+const htmlHref = {};
+for (const match of html.matchAll(/data-download="([a-z]+)"\s+href="([^"]+)"/g)) {
+  htmlHref[match[1]] = match[2];
+}
+const configUrls = {};
+for (const match of configSource.matchAll(/(macos|windows|android|ios):\s*{ url: "([^"]+)", version: "([^"]+)" }/g)) {
+  configUrls[match[1]] = { url: match[2], version: match[3] };
+}
+for (const platform of ["macos", "windows"]) {
+  const htmlUrl = htmlHref[platform];
+  const configUrl = configUrls[platform]?.url;
+  if (!htmlUrl) { fail(`${platform} 卡片缺少静态下载链接`); continue; }
+  if (/releases\/latest\//.test(htmlUrl)) fail(`${platform} HTML 链接是 latest;固定版本链接才负责下载`);
+  if (configUrl && htmlUrl !== configUrl) {
+    fail(`${platform} HTML 链接与 config 不一致:\n  html:   ${htmlUrl}\n  config: ${configUrl}`);
+  }
+  if (configUrl && !new RegExp(`releases/download/v${versionMatches[0]}/`).test(configUrl)) {
+    fail(`${platform} config 链接版本与显示版本不一致:${configUrl}`);
+  }
+}
+for (const platform of ["macos", "windows"]) {
+  if (configUrls[platform] && !html.includes(`releases/download/v${versionMatches[0]}/`)) {
+    fail(`${platform} 缺少与显示版本一致的固定链接`);
+  }
+}

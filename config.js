@@ -3,8 +3,8 @@
 window.CLARORA_SITE = {
   repository: "https://github.com/a49a/clarora",
   downloads: {
-    macos: { url: "https://github.com/a49a/clarora/releases/latest/download/Clarora-macos-arm64.dmg", version: "0.1.0" },
-    windows: { url: "https://github.com/a49a/clarora/releases/latest/download/Clarora-windows-x64.zip", version: "0.1.0" },
+    macos: { url: "https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-macos-arm64.dmg", version: "0.1.0" },
+    windows: { url: "https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-windows-x64.zip", version: "0.1.0" },
     android: null,
     ios: null,
   },
