@@ -1,5 +1,5 @@
-// Set verified release URLs here when client installers are published.
-// 首个 GitHub Release 发布后，按 docs/releases.md 的模板填写（固定产物名 + releases/latest/download 永久链接）。
+// 下载信息由 release-metadata.json 在构建期生成;运行时增强读取同一来源。
+// 请勿在本文件手工维护版本,发版流程见 docs/releases.md。
 window.CLARORA_SITE = {
   repository: "https://github.com/a49a/clarora",
   downloads: {

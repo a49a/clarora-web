@@ -8,6 +8,7 @@
     "start": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "check": "node scripts/check-site.mjs",
-    "prebuild": "node scripts/check-site.mjs"
+    "prebuild": "node scripts/check-site.mjs",
+    "postbuild": "node scripts/check-site.mjs --dist"
   }
 }

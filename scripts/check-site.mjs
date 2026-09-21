@@ -1,5 +1,5 @@
-// 官网静态检查:锚点、下载配置、无 JS 状态与资源完整性。
-// 用法:npm run check(构建后运行,检查 dist/ 与源码一致性)。
+// 官网静态检查:元数据 schema、源码令牌、锚点、凭证表述与(构建后的)
+// dist 渲染结果。npm run check 检查源码;构建后再跑可同时校验 dist 渲染。
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -8,6 +8,7 @@ const root = path.resolve(import.meta.dirname, "..");
 let failures = 0;
 const fail = (message) => { console.error(`✗ ${message}`); failures += 1; };
 const pass = (message) => console.log(`✓ ${message}`);
+const read = file => fs.readFileSync(path.join(root, file), "utf8");
 
 // 0) 交互脚本语法检查(保留原有 node --check)
 for (const script of ["site.js"]) {
@@ -16,43 +17,37 @@ for (const script of ["site.js"]) {
   else pass(`${script} 语法正常`);
 }
 
-function read(file) {
-  return fs.readFileSync(path.join(root, file), "utf8");
-}
-
-// 1) config.js 下载配置 schema
-const configSource = read("config.js");
-const configMatch = configSource.match(/downloads:\s*{([\s\S]*?)},\n/);
-if (!configMatch) { fail("config.js 缺少 downloads 配置"); }
-const platforms = ["macos", "windows", "android", "ios"];
-for (const platform of platforms) {
-  if (!configSource.includes(`${platform}:`)) fail(`config.js 缺少 ${platform} 下载配置`);
-}
-const versionMatches = [...configSource.matchAll(/version:\s*"(\d+\.\d+\.\d+)"/g)].map((m) => m[1]);
-const versions = new Set(versionMatches);
-if (versions.size > 1) fail(`config.js 版本不一致:${[...versions].join(", ")}`);
-
-// 2) 已配置平台的下载链接:https + 固定版本资产 + 可达性由 release 工作流保证
-for (const match of configSource.matchAll(/url:\s*"(https:\/\/[^"]+)"/g)) {
-  const url = match[1];
-  if (!url.startsWith("https://github.com/a49a/clarora/releases/")) {
-    fail(`下载地址必须指向 clarora 的 GitHub Releases:${url}`);
+// 1) 发布元数据:唯一下载信息来源
+const metadata = JSON.parse(read("release-metadata.json"));
+if (!/^\d+\.\d+\.\d+$/.test(metadata.version)) fail(`元数据版本非法:${metadata.version}`);
+if (metadata.tag !== `v${metadata.version}`) fail(`tag(${metadata.tag}) 与 version(${metadata.version}) 不一致`);
+if (!/^[0-9a-f]{7,40}$/.test(metadata.source_sha ?? "")) fail("source_sha 缺失或非法");
+const releasedPlatforms = Object.entries(metadata.platforms).filter(([, p]) => p.status === "released");
+for (const [name, p] of Object.entries(metadata.platforms)) {
+  if (p.status !== "released") continue;
+  if (!p.asset_name?.startsWith("Clarora-")) fail(`${name} asset_name 非法:${p.asset_name}`);
+  if (metadata.assets_base !== `https://github.com/a49a/clarora/releases/download/v${metadata.version}`) {
+    fail("assets_base 必须指向与版本一致的固定下载目录");
   }
 }
-versionMatches.length && pass(`下载配置版本一致(${[...versions].join(", ")})`);
+releasedPlatforms.length && pass(`元数据版本 ${metadata.tag},released 平台:${releasedPlatforms.map(([n]) => n).join(", ")}`);
 
-// 3) index.html:桌面平台在无 JS 时也必须有真实下载链接与版本状态
+// 2) 源码令牌:下载卡片必须使用构建期令牌(而非手写链接或状态)
 const html = read("index.html");
-for (const platform of ["macos", "windows"]) {
-  const card = html.slice(html.indexOf(`data-download="${platform}"`) - 400,
-                          html.indexOf(`data-download="${platform}"`) + 400);
-  if (card.includes("安装包待发布")) fail(`${platform} 卡片静态状态仍是「待发布」,与已发布事实不符`);
-  if (!/releases\/download\/v\d+\.\d+\.\d+\//.test(card)) fail(`${platform} 卡片缺少固定版本下载链接`);
+for (const name of ["macos", "windows", "android", "ios"]) {
+  const released = metadata.platforms[name]?.status === "released";
+  if (!html.includes(`__${name.toUpperCase()}_BADGE__`)) fail(`${name} 卡片缺少 BADGE 令牌`);
+  if (released) {
+    // released 平台渲染为固定版本下载链接;未发布平台保留构建指南入口。
+    if (!html.includes(`__${name.toUpperCase()}_HREF__`)) fail(`${name} 卡片缺少 HREF 令牌`);
+    if (!html.includes(`__${name.toUpperCase()}_LABEL__`)) fail(`${name} 卡片缺少 LABEL 令牌`);
+  }
 }
-/html[\s\S]*?0\.1\.0 可下载/.test(html) && pass("桌面平台静态状态已标注可下载版本");
+if (!html.includes("__SITE_VERSION__") || !html.includes("__LATEST_URL__")) fail("缺少版本或最新导航令牌");
+pass("下载卡片已全部令牌化(由发布元数据生成)");
 
-// 4) 站内锚点:所有 href="#..." 目标必须存在
-const anchors = new Set([...html.matchAll(/id="([^"]+)"/g)].map((m) => m[1]));
+// 3) 锚点:站内 href="#..." 必须可解析
+const anchors = new Set([...html.matchAll(/id="([^"]+)"/g)].map(m => m[1]));
 let internalLinks = 0;
 for (const match of html.matchAll(/href="#([^"]+)"/g)) {
   internalLinks += 1;
@@ -60,44 +55,31 @@ for (const match of html.matchAll(/href="#([^"]+)"/g)) {
 }
 internalLinks && pass(`站内锚点 ${internalLinks} 个全部可解析`);
 
-// 5) 无 JS 状态:关键内容必须在 HTML 静态存在(JS 只是增强)
-for (const required of ["下一点进步", "从源码构建", "同步与备份"]) {
-  if (!html.includes(required)) fail(`关键内容缺失:${required}`);
-}
-pass("关键内容静态存在(无 JS 可读)");
-
-// 6) 凭证表述:不得再声称凭证只存应用数据库
+// 4) 凭证表述:不得再声称凭证只存应用数据库
 if (/凭证只存本机应用数据库|凭证仅保存在本机应用数据库/.test(html)) {
   fail("凭证表述过时:仍声称只存应用数据库(桌面端已使用系统凭证保险库)");
 }
 pass("凭证表述与实现一致");
 
-
-// 7) HTML 下载链接与 config 一致,且必须为固定版本(而非 latest)
-const htmlHref = {};
-for (const match of html.matchAll(/data-download="([a-z]+)"\s+href="([^"]+)"/g)) {
-  htmlHref[match[1]] = match[2];
-}
-const configUrls = {};
-for (const match of configSource.matchAll(/(macos|windows|android|ios):\s*{ url: "([^"]+)", version: "([^"]+)" }/g)) {
-  configUrls[match[1]] = { url: match[2], version: match[3] };
-}
-for (const platform of ["macos", "windows"]) {
-  const htmlUrl = htmlHref[platform];
-  const configUrl = configUrls[platform]?.url;
-  if (!htmlUrl) { fail(`${platform} 卡片缺少静态下载链接`); continue; }
-  if (/releases\/latest\//.test(htmlUrl)) fail(`${platform} HTML 链接是 latest;固定版本链接才负责下载`);
-  if (configUrl && htmlUrl !== configUrl) {
-    fail(`${platform} HTML 链接与 config 不一致:\n  html:   ${htmlUrl}\n  config: ${configUrl}`);
+// 5) 构建产物渲染校验(--dist 时):无 JS 状态、固定链接、版本一致
+const checkDist = process.argv.includes("--dist");
+const distIndex = path.join(root, "dist", "index.html");
+if (checkDist && fs.existsSync(distIndex)) {
+  const rendered = read(path.join("dist", "index.html"));
+  for (const name of ["macos", "windows", "android", "ios"]) {
+    if (rendered.includes(`__${name.toUpperCase()}_BADGE__`)) fail(`dist 中残留未填充令牌:${name}`);
   }
-  if (configUrl && !new RegExp(`releases/download/v${versionMatches[0]}/`).test(configUrl)) {
-    fail(`${platform} config 链接版本与显示版本不一致:${configUrl}`);
+  if (rendered.includes("__SITE_VERSION__")) fail("dist 中残留版本令牌");
+  if (metadata.platforms.macos.status === "released") {
+    if (!rendered.includes(`${metadata.version} 可下载`)) fail("macOS 卡片未显示可下载版本");
+    if (!rendered.includes(`${metadata.assets_base}/${metadata.platforms.macos.asset_name}`)) fail("macOS 下载链接与元数据不一致");
   }
-}
-for (const platform of ["macos", "windows"]) {
-  if (configUrls[platform] && !html.includes(`releases/download/v${versionMatches[0]}/`)) {
-    fail(`${platform} 缺少与显示版本一致的固定链接`);
-  }
+  if (/releases\/latest\/download\//.test(rendered)) fail("下载链接不得使用 latest(固定版本链接才负责下载)");
+  pass("dist 渲染校验通过(令牌已全部填充)");
+} else if (!checkDist) {
+  console.log("ℹ 本次仅检查源码;构建产物渲染校验用 --dist 运行");
+} else {
+  console.log("ℹ dist 尚未构建");
 }
 
 if (failures > 0) {

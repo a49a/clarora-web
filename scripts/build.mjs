@@ -1,17 +1,69 @@
-import { mkdir, copyFile, rm } from "node:fs/promises";
+import { mkdir, copyFile, rm, readFile, writeFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 const out = new URL("dist/", root);
+
+// ── 发布元数据:唯一下载信息来源(单一维护点,构建期校验并生成)──────────
+const metadata = JSON.parse(await readFile(new URL("release-metadata.json", root), "utf8"));
+if (!/^\d+\.\d+\.\d+$/.test(metadata.version)) {
+  throw new Error(`release-metadata.json 版本非法:${metadata.version}`);
+}
+if (metadata.tag !== `v${metadata.version}`) {
+  throw new Error(`tag(${metadata.tag}) 必须为 v<版本> 且与 version(${metadata.version}) 一致`);
+}
+if (!/^[0-9a-f]{7,40}$/.test(metadata.source_sha)) throw new Error("source_sha 缺失或非法");
+
+const released = Object.entries(metadata.platforms)
+  .filter(([, p]) => p.status === "released")
+  .map(([name, p]) => ({ name, ...p }));
+if (released.length === 0) throw new Error("没有任何 released 平台,请核对 release-metadata.json");
+for (const p of released) {
+  if (!p.asset_name) throw new Error(`released 平台 ${p.name} 缺少 asset_name`);
+}
+
+// 每个平台的下载卡片令牌:released 出固定版本链接,其余指向构建指南。
+const tokenFor = (name) => {
+  const p = metadata.platforms[name];
+  const released = p.status === "released";
+  const label = name === "windows" ? "下载安装包" : "下载客户端";
+  return {
+    badge: released ? `${metadata.version} 可下载` : "安装包待发布",
+    href: released ? `${metadata.assets_base}/${p.asset_name}` : "#build-guide",
+    label: released ? label : "查看构建指南",
+  };
+};
+
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
-for (const file of [
-  "index.html",
-  "styles.css",
-  "site.js",
-  "config.js",
-  "favicon.svg",
-  "favicon.png",
-  "apple-touch-icon.png",
-]) {
+for (const file of ["styles.css", "site.js", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
   await copyFile(new URL(file, root), new URL(file, out));
 }
-console.log("Static website built in dist/");
+
+// dist/config.js:运行时增强读取同一元数据来源
+const configJs = `window.CLARORA_SITE = {
+  repository: "${metadata.repository}",
+  latestUrl: "${metadata.latest_url}",
+  version: "${metadata.version}",
+  downloads: {
+${Object.entries(metadata.platforms)
+  .map(([name, p]) => p.status === "released"
+    ? `    ${name}: { url: "${metadata.assets_base}/${p.asset_name}", version: "${metadata.version}" },`
+    : `    ${name}: null,`)
+  .join("\n")}
+  },
+};
+`;
+await writeFile(new URL("config.js", out), configJs);
+
+// dist/index.html:填充下载卡片令牌;无 JS 也呈现准确版本与链接
+let html = await readFile(new URL("index.html", root), "utf8");
+for (const name of ["macos", "windows", "android", "ios"]) {
+  const t = tokenFor(name);
+  html = html.replaceAll(`__${name.toUpperCase()}_BADGE__`, t.badge);
+  html = html.replaceAll(`__${name.toUpperCase()}_HREF__`, t.href);
+  html = html.replaceAll(`__${name.toUpperCase()}_LABEL__`, t.label);
+}
+html = html.replaceAll("__SITE_VERSION__", metadata.version);
+html = html.replaceAll("__LATEST_URL__", metadata.latest_url);
+await writeFile(new URL("index.html", out), html);
+
+console.log(`Static website built in dist/ (release ${metadata.tag}, source ${metadata.source_sha})`);

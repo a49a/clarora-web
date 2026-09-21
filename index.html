@@ -492,6 +492,8 @@
           <div class="download-heading">
             <p class="eyebrow">TAKE CLARORA WITH YOU</p>
             <h2 id="download-title">下一点进步，<br />就在你的设备上。</h2>
+            <p>当前版本 <strong>__SITE_VERSION__</strong> ·
+              <a href="__LATEST_URL__">查看最新版本 ↗</a></p>
             <p>四个平台的客户端源码，正在这里生长。</p>
           </div>
           <div class="download-grid">
@@ -500,12 +502,12 @@
               <h3>macOS</h3>
               <p>留一段专注的桌面时光</p>
               <span class="release-status" data-status="macos"
-                >0.1.0 可下载</span
+                >__MACOS_BADGE__</span
               ><a
                 class="platform-download"
                 data-download="macos"
-                href="https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-macos-arm64.dmg"
-                >下载客户端 <span aria-hidden="true">↗</span></a
+                href="__MACOS_HREF__"
+                >__MACOS_LABEL__ <span aria-hidden="true">↗</span></a
               >
             </article>
             <article class="download-card">
@@ -515,12 +517,12 @@
               <h3>Windows</h3>
               <p>在熟悉的电脑上继续</p>
               <span class="release-status" data-status="windows"
-                >0.1.0 可下载</span
+                >__WINDOWS_BADGE__</span
               ><a
                 class="platform-download"
                 data-download="windows"
-                href="https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-windows-x64.zip"
-                >下载安装包 <span aria-hidden="true">↗</span></a
+                href="__WINDOWS_HREF__"
+                >__WINDOWS_LABEL__ <span aria-hidden="true">↗</span></a
               >
             </article>
             <article class="download-card">
@@ -535,7 +537,7 @@
               <h3>Android</h3>
               <p>把学习装进口袋</p>
               <span class="release-status" data-status="android"
-                >安装包待发布</span
+                >__ANDROID_BADGE__</span
               ><a
                 class="platform-download"
                 data-download="android"
@@ -547,7 +549,7 @@
               <span class="platform-symbol" aria-hidden="true">▯</span>
               <h3>iOS</h3>
               <p>给零碎时间一点意义</p>
-              <span class="release-status" data-status="ios">安装包待发布</span
+              <span class="release-status" data-status="ios">__IOS_BADGE__</span
               ><a
                 class="platform-download"
                 data-download="ios"
@@ -557,6 +559,28 @@
             </article>
           </div>
           <div class="build-guide" id="build-guide">
+            <div class="build-guide-top">
+              <h3>安装与故障处理</h3>
+              <div class="build-tabs" role="tablist" aria-label="安装故障处理">
+                <ul class="troubleshoot-list">
+                  <li><strong>macOS 打开被拦：</strong>安装包未做代码签名。首次打开若被 Gatekeeper 拦截，在「访达 → 应用程序」中右键 Clarora 选「打开」，或在终端执行
+                    <code>xattr -dr com.apple.quarantine /Applications/Clarora.app</code>。运行时库已内置，无需 Homebrew。</li>
+                  <li><strong>Windows 侧载安装：</strong>解压 zip 后，先在「设置 → 隐私和安全性 → 开发者选项」开启开发者模式，再右键运行包内 <code>Add-AppDevPackage.ps1</code>，依赖包会一并安装。SmartScreen 提示选择「仍要运行」。</li>
+                  <li><strong>端侧转写不可用：</strong>v0.1.0 的 Windows 包已内置转写组件；macOS 首次使用需在「设置 → 字幕转写引擎」下载模型。仍不可用时检查系统是否允许麦克风。</li>
+                  <li><strong>升级保留数据：</strong>学习数据存于本机数据库与所选云存储，覆盖安装不会丢失；跨大版本升级前建议先做一次「备份本机资料」。</li>
+                </ul>
+              </div>
+            </div>
+            <div class="build-guide-top">
+              <h3>平台差异与更新记录</h3>
+              <ul class="troubleshoot-list">
+                <li><strong>macOS：</strong>功能最完整——视频学习与双字幕同显、目录批量导入、命令导入、音频合并。</li>
+                <li><strong>Windows：</strong>视频学习使用系统播放器（截取保存音视频，不保留内嵌字幕轨）；Shell 命令导入不开放。</li>
+                <li><strong>Android / iOS：</strong>移动学习页复用桌面数据；不做 Anki 导入与本地大文件学习，桌面导入的卡片与资料经「同步与备份」下发。</li>
+                <li><strong>更新记录：</strong>v0.1.0（2026-09-18）首个公开版本——闪卡复习、音频学习、端侧字幕、口语跟读、PDF 阅读、自有存储备份、Anki 导入（桌面端）。
+                  后续版本见 <a href="https://github.com/a49a/clarora/releases">Releases 页面 ↗</a>。</li>
+              </ul>
+            </div>
             <div class="build-guide-top">
               <h3>从源码构建</h3>
               <div class="build-tabs" role="tablist" aria-label="平台构建指南">
