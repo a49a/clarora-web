@@ -72,11 +72,6 @@ if (/凭证只存本机应用数据库|凭证仅保存在本机应用数据库/.
 }
 pass("凭证表述与实现一致");
 
-if (failures > 0) {
-  console.error(`\n${failures} 项检查未通过`);
-  process.exit(1);
-}
-console.log("\n官网静态检查全部通过");
 
 // 7) HTML 下载链接与 config 一致,且必须为固定版本(而非 latest)
 const htmlHref = {};
@@ -104,3 +99,9 @@ for (const platform of ["macos", "windows"]) {
     fail(`${platform} 缺少与显示版本一致的固定链接`);
   }
 }
+
+if (failures > 0) {
+  console.error(`\n${failures} 项检查未通过`);
+  process.exit(1);
+}
+console.log("\n官网静态检查全部通过");
