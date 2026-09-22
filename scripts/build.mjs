@@ -18,9 +18,12 @@ async function loadMetadata() {
     const release = await res.json();
     if (release.draft || release.prerelease) throw new Error("最新 Release 是草稿或预发布,跳过");
     const assets = release.assets ?? [];
+    // 更新 assets_base 和 latest_url 到新版本,保持链接与版本一致
+    const assetsBase = "https://github.com/a49a/clarora/releases/download/" + release.tag_name;
+    const latestUrl = "https://github.com/a49a/clarora/releases/" + release.tag_name;
     const findAsset = name => {
       const asset = assets.find(a => a.name === name);
-      return asset ? asset.browser_download_url : metadata.assets_base + "/" + name;
+      return asset ? asset.browser_download_url : assetsBase + "/" + name;
     };
     const platforms = {};
     for (const [name, conf] of Object.entries(local.platforms)) {
@@ -30,11 +33,13 @@ async function loadMetadata() {
         platforms[name] = conf;
       }
     }
+    // 不从 API 的 target_commitish 覆盖 source_sha——它返回的是分支名而非 SHA
     return {
       ...local,
       version: release.tag_name.replace(/^v/, ""),
       tag: release.tag_name,
-      source_sha: release.target_commitish ? release.target_commitish.slice(0, 40) : local.source_sha,
+      assets_base: assetsBase,
+      latest_url: latestUrl,
       platforms,
     };
   } catch (err) {
