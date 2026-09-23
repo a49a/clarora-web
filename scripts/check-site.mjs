@@ -61,21 +61,42 @@ if (/凭证只存本机应用数据库|凭证仅保存在本机应用数据库/.
 }
 pass("凭证表述与实现一致");
 
-// 5) 构建产物渲染校验(--dist 时):无 JS 状态、固定链接、版本一致
+// 5) 构建产物渲染校验(--dist 时):无 JS 状态、固定链接、版本一致。
+//    比较基准是构建写入 dist/release-metadata.json 的解析结果;
+//    缺失说明 dist 由旧构建产生,元数据错位正是要拦下的问题。
 const checkDist = process.argv.includes("--dist");
 const distIndex = path.join(root, "dist", "index.html");
+const distMetaFile = path.join(root, "dist", "release-metadata.json");
 if (checkDist && fs.existsSync(distIndex)) {
+  let distMeta;
+  if (fs.existsSync(distMetaFile)) {
+    distMeta = JSON.parse(read(path.join("dist", "release-metadata.json")));
+    if (distMeta.tag !== `v${distMeta.version}`) fail(`dist 元数据 tag(${distMeta.tag}) 与 version(${distMeta.version}) 不一致`);
+    if (!/^[0-9a-f]{7,40}$/.test(distMeta.source_sha ?? "")) fail("dist 元数据 source_sha 缺失或非法");
+  } else {
+    fail("dist 缺少 release-metadata.json(构建产物过旧,无法核对渲染基准)");
+    distMeta = metadata;
+  }
   const rendered = read(path.join("dist", "index.html"));
   for (const name of ["macos", "windows", "android", "ios"]) {
     if (rendered.includes(`__${name.toUpperCase()}_BADGE__`)) fail(`dist 中残留未填充令牌:${name}`);
   }
-  if (rendered.includes("__SITE_VERSION__")) fail("dist 中残留版本令牌");
-  if (metadata.platforms.macos.status === "released") {
-    if (!rendered.includes(`${metadata.version} 可下载`)) fail("macOS 卡片未显示可下载版本");
-    if (!rendered.includes(`${metadata.assets_base}/${metadata.platforms.macos.asset_name}`)) fail("macOS 下载链接与元数据不一致");
+  if (rendered.includes("__SITE_VERSION__") || rendered.includes("__LATEST_URL__")) fail("dist 中残留版本或导航令牌");
+  if (!rendered.includes(distMeta.version)) fail(`dist 未渲染当前版本 ${distMeta.version}`);
+  if (distMeta.latest_url && !rendered.includes(distMeta.latest_url)) fail("dist 版本详情链接与元数据不一致");
+  // 逐平台:released 必须渲染可下载徽标与解析后的下载地址;非 released
+  // 不得出现安装包链接。
+  for (const [name, p] of Object.entries(distMeta.platforms)) {
+    if (p.status === "released") {
+      if (!rendered.includes(`${distMeta.version} 可下载`)) fail(`${name} 卡片未显示可下载版本`);
+      const expected = p.url ?? `${distMeta.assets_base}/${p.asset_name}`;
+      if (!rendered.includes(expected)) fail(`${name} 下载链接与元数据不一致`);
+    } else if (p.asset_name && rendered.includes(`${p.asset_name}`)) {
+      fail(`非 released 平台 ${name} 的安装包链接出现在 dist 中`);
+    }
   }
   if (/releases\/latest\/download\//.test(rendered)) fail("下载链接不得使用 latest(固定版本链接才负责下载)");
-  pass("dist 渲染校验通过(令牌已全部填充)");
+  pass("dist 渲染校验通过(令牌已全部填充,与构建元数据一致)");
 } else if (!checkDist) {
   console.log("ℹ 本次仅检查源码;构建产物渲染校验用 --dist 运行");
 } else {
