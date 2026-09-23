@@ -37,16 +37,25 @@ npm run build
 
 ## 更新下载入口
 
-编辑 `config.js`。尚未发布的平台保持 `null`，页面会提供构建指南。安装包发布并验证后，填写 HTTPS 地址和版本：
+下载信息唯一来源是根目录的 `release-metadata.json`（`config.js` 与页面令牌都是
+构建产物，不要手改）。CI 在线构建会先从 GitHub Releases API 拉取最新版本合并到
+这份元数据上；本地无网络时直接使用本地文件。发布新版本通常不需要改这个仓库——
+部署工作流会自动带上新版本号、固定下载链接和来源 SHA。
 
-```js
-macos: {
-  url: 'https://example.com/clarora.dmg',
-  version: 'v0.1.0',
-}
+本地开发预览使用与部署完全相同的渲染管线：
+
+```sh
+npm run dev        # 先构建 dist/ 再启动 http://127.0.0.1:4173
 ```
 
-`repository` 指向客户端源码仓库。不要把示例下载地址当作真实地址使用。
+需要固定某个版本的元数据时（如直接消费客户端 Release 随包发布的
+`release-metadata.json`，同一 schema）：
+
+```sh
+CLARORA_RELEASE_METADATA=/path/to/release-metadata.json npm run build
+```
+
+`repository` 指向客户端源码仓库。尚未发布的平台保持 `planned`，页面会提供构建指南。
 
 ## 页面内容
 

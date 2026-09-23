@@ -2,11 +2,19 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-const root = fileURLToPath(new URL("../", import.meta.url));
+
+// 开发预览走与部署完全相同的构建管线:先渲染 dist/,再服务渲染产物。
+// 源 index.html 含构建期令牌,直接服务会看到 __MACOS_BADGE__ 等占位符;
+// 修改源码或 release-metadata.json 后重新运行 npm run dev 即可。
+const { buildSite } = await import("./build.mjs");
+await buildSite();
+
+const root = fileURLToPath(new URL("../dist/", import.meta.url));
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
 };
@@ -15,6 +23,7 @@ const allowed = new Set([
   "/styles.css",
   "/site.js",
   "/config.js",
+  "/release-metadata.json",
   "/favicon.svg",
   "/favicon.png",
   "/apple-touch-icon.png",
@@ -32,7 +41,7 @@ http
       }
       const data = await readFile(path.join(root, file));
       res.writeHead(200, {
-        "Content-Type": types[path.extname(file)],
+        "Content-Type": types[path.extname(file)] ?? "application/octet-stream",
         "Cache-Control": "no-store",
       });
       res.end(data);
