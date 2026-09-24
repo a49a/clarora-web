@@ -30,6 +30,8 @@ jobs:
           package-manager-cache: false
       - name: Check JavaScript
         run: npm run check
+      - name: Build scenario matrix
+        run: npm run test:build
       - name: Build static site
         run: npm run build
       - run: npm ci
