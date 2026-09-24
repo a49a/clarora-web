@@ -25,7 +25,7 @@ if (!/^[0-9a-f]{7,40}$/.test(metadata.source_sha ?? "")) fail("source_sha 缺失
 const releasedPlatforms = Object.entries(metadata.platforms).filter(([, p]) => p.status === "released");
 for (const [name, p] of Object.entries(metadata.platforms)) {
   if (p.status !== "released") continue;
-  if (!p.asset_name?.startsWith("Clarora-")) fail(`${name} asset_name 非法:${p.asset_name}`);
+  if (name !== "ios" && !p.asset_name?.startsWith("Clarora-")) fail(`${name} asset_name 非法:${p.asset_name}`);
   if (metadata.assets_base !== `https://github.com/a49a/clarora/releases/download/v${metadata.version}`) {
     fail("assets_base 必须指向与版本一致的固定下载目录");
   }
@@ -88,9 +88,9 @@ if (checkDist && fs.existsSync(distIndex)) {
   // 不得出现安装包链接。
   for (const [name, p] of Object.entries(distMeta.platforms)) {
     if (p.status === "released") {
-      if (!rendered.includes(`${distMeta.version} 可下载`)) fail(`${name} 卡片未显示可下载版本`);
+      if (!rendered.includes(`${distMeta.version}${name === "ios" ? " 渠道已开放" : " 可下载"}`)) fail(`${name} 卡片未显示可下载版本`);
       const expected = p.url ?? `${distMeta.assets_base}/${p.asset_name}`;
-      if (!rendered.includes(expected)) fail(`${name} 下载链接与元数据不一致`);
+      if (!rendered.includes(expected.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"))) fail(`${name} 下载链接与元数据不一致`);
     } else if (p.asset_name && rendered.includes(`${p.asset_name}`)) {
       fail(`非 released 平台 ${name} 的安装包链接出现在 dist 中`);
     }

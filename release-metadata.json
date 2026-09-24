@@ -18,7 +18,7 @@
       "status": "released",
       "requirements": "Windows 10 2004+,开发者模式侧载"
     },
-    "android": { "status": "planned", "requirements": "Android 8+" },
+    "android": { "asset_name": "Clarora-android.apk", "arch": "universal", "status": "planned", "requirements": "Android 8+" },
     "ios": { "status": "planned", "requirements": "iOS 15.1+,需设备验证" }
   }
 }

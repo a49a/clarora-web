@@ -66,3 +66,11 @@ CLARORA_RELEASE_METADATA=/path/to/release-metadata.json npm run build
 功能示意不会发送 AI 请求或持久化学习数据。主要内容在禁用 JavaScript 时仍可阅读。发布状态通过配置维护，不自动查询 GitHub。
 
 文案基于 Clarora 客户端 README 与平台、同步文档；客户端能力变化时同步更新官网，避免把源码支持描述为已完成安装包或真机验收。
+
+## 移动端发布元数据
+
+Android 根据最新 Release 是否包含 `Clarora-android.apk` 显示下载，即使本地状态仍为 planned 也可识别。iOS 从该 Release 附带的 `release-metadata.json` 读取渠道，要求 version/tag/source_sha 与 Release 对应；仅接受明确 released 的 TestFlight 或 App Store URL，不提供普通 IPA 下载。没有渠道或 URL 不合法时显示构建指南。
+
+显式元数据文件的 iOS 示例：`"ios": {"status": "released", "channel": "testflight", "url": "https://testflight.apple.com/join/AbCd1234"}`（示例地址不能直接用于生产）。Android 示例：`"android": {"status": "released", "asset_name": "Clarora-android.apk", "url": "https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-android.apk"}`。只有确认渠道已开放后才能设置 released。
+
+客户端发布不会自动触发本仓库 Pages；需另行触发官网构建部署。

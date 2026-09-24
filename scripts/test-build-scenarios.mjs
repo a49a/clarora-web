@@ -54,10 +54,16 @@ const ALL = [
   { name: "Clarora-windows-x64.zip", browser_download_url: "https://github.com/a49a/clarora/releases/download/v9.9.9/Clarora-windows-x64.zip" },
 ];
 const mode = process.env.FIX_ASSETS;
+if (mode === "channel" || mode === "bad-source") ALL.push({name: "release-metadata.json", browser_download_url: "https://github.com/a49a/clarora/releases/download/v9.9.9/release-metadata.json"});
+if (mode === "mobile") ALL.push({name: "Clarora-android.apk", browser_download_url: "https://github.com/a49a/clarora/releases/download/v9.9.9/Clarora-android.apk"});
 const assets = mode === "macos-only" ? ALL.slice(0, 1) : mode === "windows-only" ? ALL.slice(1) : mode === "none" ? [] : ALL;
 const commitsFail = process.env.FIX_COMMITS_FAIL === "1";
 globalThis.fetch = async url => {
   const u = String(url);
+  if (u.endsWith("/release-metadata.json")) return {ok: true, json: async () => ({
+    version: "9.9.9", tag: "v9.9.9", source_sha: mode === "bad-source" ? "1234567" : "9f8e7d6c5b4a3210fedcba9876543210fedcba98",
+    platforms: {ios: {status: "released", channel: "testflight", url: "https://testflight.apple.com/join/AbCd1234"}},
+  })};
   if (u.includes("/releases/latest")) return { ok: true, status: 200, json: async () => ({
     tag_name: "v9.9.9", html_url: "https://github.com/a49a/clarora/releases/tag/v9.9.9",
     draft: false, prerelease: false, assets,
@@ -94,6 +100,29 @@ const distIndex = dir => fs.readFileSync(path.join(dir, "dist", "index.html"), "
 
 // ── 场景执行 ──
 async function main() {
+  // Mobile failures are defined in the release plan: missing asset, invalid URL,
+  // IPA masquerading as a channel, unavailable channel, and channel success.
+  for (const scenario of [
+    {name: "Android APK", platforms: {android: {status: "released", asset_name: "Clarora-android.apk", url: "https://example.com/Clarora-android.apk"}}, android: "released", ios: "planned"},
+    {name: "TestFlight", platforms: {ios: {status: "released", channel: "testflight", url: "https://testflight.apple.com/join/AbCd1234"}}, android: "planned", ios: "released", label: "加入 TestFlight"},
+    {name: "App Store", platforms: {ios: {status: "released", channel: "app-store", url: "https://apps.apple.com/cn/app/clarora/id123456789"}}, android: "planned", ios: "released", label: "前往 App Store"},
+    {name: "invalid APK URL", platforms: {android: {status: "released", url: "javascript:alert(1)"}}, android: "planned", ios: "planned"},
+    {name: "IPA is not a public channel", platforms: {ios: {status: "released", url: "https://example.com/Clarora.ipa"}}, android: "planned", ios: "planned"},
+    {name: "channel missing URL", platforms: {ios: {status: "released", channel: "testflight"}}, android: "planned", ios: "planned"},
+    {name: "channel not open", platforms: {ios: {status: "planned", channel: "testflight", url: "https://testflight.apple.com/join/AbCd1234"}}, android: "planned", ios: "planned"},
+  ]) {
+    const dir = await makeWorkspace();
+    try {
+      const build = await buildWithMetadataFile(dir, {macos: MACOS_RELEASE, ...scenario.platforms});
+      const check = checkDist(dir);
+      const meta = distMetadata(dir);
+      const html = distIndex(dir);
+      const ok = build.status === 0 && check.status === 0 && meta.platforms.android.status === scenario.android
+        && meta.platforms.ios.status === scenario.ios && (!scenario.label || html.includes(scenario.label));
+      ok ? pass(`Mobile: ${scenario.name}`) : fail(`Mobile: ${scenario.name}`, build.stderr + check.stderr);
+    } finally { await rm(dir, {recursive: true, force: true}); }
+  }
+
   // 1. 发布元数据文件:双平台
   {
     const dir = await makeWorkspace();
@@ -156,7 +185,7 @@ async function main() {
   }
 
   // 6~9. GitHub API 路径:双平台/仅 macOS/仅 Windows/联网失败回退
-  for (const mode of ["both", "macos-only", "windows-only"]) {
+  for (const mode of ["both", "macos-only", "windows-only", "mobile", "channel"]) {
     const dir = await makeWorkspace();
     const build = buildWithApiFixture(dir, mode);
     const check = checkDist(dir);
@@ -164,6 +193,8 @@ async function main() {
     const windowsReleased = meta.platforms.windows.status === "released";
     const macosPlanned = meta.platforms.macos.status !== "released";
     const ok = build.status === 0 && check.status === 0
+      && (mode !== "mobile" || meta.platforms.android.status === "released")
+      && (mode !== "channel" || meta.platforms.ios.channel === "testflight" && meta.platforms.ios.status === "released")
       && (mode === "windows-only" ? macosPlanned && windowsReleased
         : mode === "macos-only" ? meta.platforms.windows.status === "planned"
         : meta.platforms.windows.status === "released");
@@ -179,6 +210,15 @@ async function main() {
       ? pass("GitHub API: 拉取失败回退本地元数据(v0.1.0)")
       : fail("GitHub API: 回退", `build=${build.status} version=${meta.version}`);
     await rm(dir, { recursive: true, force: true });
+  }
+
+  {
+    const dir = await makeWorkspace();
+    try {
+      const build = buildWithApiFixture(dir, "bad-source");
+      build.status !== 0 && build.stderr.includes("发布元数据版本或来源不匹配")
+        ? pass("发布元数据 SHA 不匹配时明确失败") : fail("发布元数据 SHA 不匹配未被拦截");
+    } finally { await rm(dir, {recursive: true, force: true}); }
   }
 
   // 10. 开发预览:serve.mjs 走正式渲染,页面无令牌残留

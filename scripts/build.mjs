@@ -16,6 +16,16 @@ async function loadLocalMetadata() {
 // 发布为准:只有远端明确 released 且带可用下载地址的平台才渲染下载,
 // 资产名/URL/架构用远端值(资产改名后不再拼旧文件名);远端缺失或无效的
 // 平台一律降级为待发布,本地 released 状态不能凭空保留。
+class ReleaseMetadataError extends Error {}
+function validUrl(value) {
+  try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password; } catch { return false; }
+}
+function iosChannel(entry) {
+  if (!validUrl(entry?.url)) return false;
+  const u = new URL(entry.url);
+  return (entry.channel === "testflight" && u.hostname === "testflight.apple.com" && /^\/join\/[A-Za-z0-9]+$/.test(u.pathname))
+    || (entry.channel === "app-store" && u.hostname === "apps.apple.com" && /\/id[0-9]+$/.test(u.pathname));
+}
 function mergeRemote(local, remote) {
   if (!/^\d+\.\d+\.\d+$/.test(remote.version ?? "")) throw new Error("远端元数据 version 非法:" + remote.version);
   if (remote.tag !== "v" + remote.version) throw new Error("远端元数据 tag(" + remote.tag + ") 与 version(" + remote.version + ") 不一致");
@@ -24,14 +34,14 @@ function mergeRemote(local, remote) {
   for (const [name, conf] of Object.entries(local.platforms)) {
     const entry = remote.platforms?.[name];
     const url = typeof entry?.url === "string" ? entry.url : "";
-    if (entry?.status === "released" && url.startsWith("https://")) {
+    if (entry?.status === "released" && validUrl(url) && (name !== "ios" || iosChannel(entry))) {
       const assetName = typeof entry.asset_name === "string" && entry.asset_name ? entry.asset_name : url.split("/").pop();
       platforms[name] = { ...conf, ...entry, status: "released", url, asset_name: assetName };
     } else {
       if (conf.status === "released") {
         console.warn(`平台 ${name} 在远端元数据中${entry ? "没有可用的下载地址" : "缺失"},按待发布渲染`);
       }
-      platforms[name] = { ...conf, status: "planned" };
+      platforms[name] = { ...conf, status: "planned", url: undefined, channel: undefined };
     }
   }
   return {
@@ -72,11 +82,27 @@ async function fetchLatestMetadata(local) {
   // 平台状态以最新 Release 的实际资产为准(降级与告警统一由 mergeRemote 处理)。
   const platforms = {};
   for (const [name, conf] of Object.entries(local.platforms)) {
-    const asset = conf.status === "released" ? assets.find(a => a.name === conf.asset_name) : null;
+    const asset = name !== "ios" && conf.asset_name ? assets.find(a => a.name === conf.asset_name) : null;
     if (asset) {
-      platforms[name] = { ...conf, url: asset.browser_download_url };
+      platforms[name] = { ...conf, status: "released", url: asset.browser_download_url };
     } else {
-      platforms[name] = { ...conf, status: "planned" };
+      platforms[name] = { ...conf, status: "planned", url: undefined, channel: undefined };
+    }
+  }
+  // iOS is a channel, not a universally installable IPA asset. Read only
+  // metadata attached to this release and bound to its resolved source.
+  const metadataAsset = assets.find(a => a.name === "release-metadata.json");
+  if (metadataAsset) {
+    const expected = assetsBase + "/release-metadata.json";
+    if (metadataAsset.browser_download_url !== expected) throw new ReleaseMetadataError("发布元数据资产 URL 不匹配");
+    const response = await fetch(expected, { signal: AbortSignal.timeout(10_000) });
+    if (!response.ok) throw new Error("发布元数据读取失败");
+    const declared = await response.json();
+    if (declared.tag !== release.tag_name || declared.version !== release.tag_name.replace(/^v/, "") || declared.source_sha !== sourceSha) {
+      throw new ReleaseMetadataError("发布元数据版本或来源不匹配");
+    }
+    if (declared.platforms?.ios?.status === "released" && iosChannel(declared.platforms.ios)) {
+      platforms.ios = declared.platforms.ios;
     }
   }
   return {
@@ -100,6 +126,7 @@ async function loadMetadata() {
   try {
     return mergeRemote(local, await fetchLatestMetadata(local));
   } catch (err) {
+    if (err instanceof ReleaseMetadataError) throw err;
     console.warn("GitHub Releases 拉取失败,使用本地 release-metadata.json: " + err.message);
     return local;
   }
@@ -109,9 +136,9 @@ async function loadMetadata() {
 const tokenFor = (metadata, name) => {
   const p = metadata.platforms[name];
   const released = p.status === "released";
-  const label = name === "windows" ? "下载安装包" : "下载客户端";
+  const label = name === "ios" ? (p.channel === "testflight" ? "加入 TestFlight" : "前往 App Store") : name === "windows" ? "下载安装包" : "下载客户端";
   return {
-    badge: released ? metadata.version + " 可下载" : "安装包待发布",
+    badge: released ? metadata.version + (name === "ios" ? " 渠道已开放" : " 可下载") : "安装包待发布",
     href: released ? p.url : "#build-guide",
     label: released ? label : "查看构建指南",
   };
@@ -132,12 +159,16 @@ export async function buildSite() {
     .map(([name, p]) => ({ name, ...p }));
   if (released.length === 0) throw new Error("没有任何 released 平台,请核对 release-metadata.json");
   for (const p of released) {
-    if (!p.asset_name) throw new Error("released 平台 " + p.name + " 缺少 asset_name");
+    if (p.name !== "ios" && !p.asset_name) throw new Error("released 平台 " + p.name + " 缺少 asset_name");
   }
   // 渲染一律使用解析后的平台 URL:元数据可提供自定义 HTTPS 下载地址;
   // 未提供时才按固定版本目录拼接,两种来源最终走同一条渲染路径。
   for (const p of Object.values(metadata.platforms)) {
-    if (p.status === "released") p.url ??= metadata.assets_base + "/" + p.asset_name;
+    if (p.status === "released") {
+      p.url ??= metadata.assets_base + "/" + p.asset_name;
+      if (!validUrl(p.url)) throw new Error("下载 URL 非法");
+      if (p === metadata.platforms.ios && !iosChannel(p)) throw new Error("iOS 分发渠道非法");
+    }
   }
 
   await rm(out, { recursive: true, force: true });
@@ -147,28 +178,23 @@ export async function buildSite() {
   }
 
   // dist/config.js:运行时增强读取同一元数据来源
-  const platformEntries = Object.entries(metadata.platforms)
-    .map(([name, p]) => p.status === "released"
-      ? '    ' + name + ': { url: "' + p.url + '", version: "' + metadata.version + '" },'
-      : '    ' + name + ': null,')
-    .join("\n");
-  const configJs = "window.CLARORA_SITE = {\n" +
-    '  repository: "' + metadata.repository + '",\n' +
-    '  latestUrl: "' + metadata.latest_url + '",\n' +
-    '  version: "' + metadata.version + '",\n' +
-    "  downloads: {\n" + platformEntries + "\n  },\n};\n";
+  const downloads = Object.fromEntries(Object.entries(metadata.platforms).map(([name, p]) => [name,
+    p.status === "released" ? {url: p.url, version: metadata.version, channel: p.channel} : null]));
+  const configJs = "window.CLARORA_SITE = " + JSON.stringify({repository: metadata.repository,
+    latestUrl: metadata.latest_url, version: metadata.version, downloads}, null, 2) + ";\n";
   await writeFile(new URL("config.js", out), configJs);
 
   // dist/index.html:填充下载卡片令牌;无 JS 也呈现准确版本与链接
+  const escapeHtml = value => String(value).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
   let html = await readFile(new URL("index.html", root), "utf8");
   for (const name of ["macos", "windows", "android", "ios"]) {
     const t = tokenFor(metadata, name);
     html = html.replaceAll("__" + name.toUpperCase() + "_BADGE__", t.badge);
-    html = html.replaceAll("__" + name.toUpperCase() + "_HREF__", t.href);
+    html = html.replaceAll("__" + name.toUpperCase() + "_HREF__", escapeHtml(t.href));
     html = html.replaceAll("__" + name.toUpperCase() + "_LABEL__", t.label);
   }
   html = html.replaceAll("__SITE_VERSION__", metadata.version);
-  html = html.replaceAll("__LATEST_URL__", metadata.latest_url);
+  html = html.replaceAll("__LATEST_URL__", escapeHtml(metadata.latest_url));
   await writeFile(new URL("index.html", out), html);
 
   // dist/release-metadata.json:构建实际使用的解析结果,postbuild 的 --dist

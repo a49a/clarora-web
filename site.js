@@ -175,7 +175,7 @@ $$("[data-download]").forEach((link) => {
     link.href = release.url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = platform === "ios" ? "前往安装 ↗" : "下载客户端 ↗";
+    link.textContent = platform === "ios" ? (release.channel === "testflight" ? "加入 TestFlight ↗" : "前往 App Store ↗") : "下载客户端 ↗";
     $(`[data-status="${platform}"]`).textContent =
       release.version || "安装包已发布";
   } else {
