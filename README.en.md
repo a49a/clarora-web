@@ -37,7 +37,7 @@ See [pages.yml](.github/workflows/pages.yml) for the deployment pipeline, and th
 
 ## Updating Download Entries
 
-The sole source of download info is the root-level `release-metadata.json` (`config.js` and page tokens are build artifacts — do not edit them by hand). CI builds fetch the latest version from the GitHub Releases API and merge it into this metadata; local builds without network access use the local file directly. Publishing a new release typically requires no changes to this repository — the deploy workflow automatically picks up the new version number, fixed download links, and source SHA.
+The source of download configuration is the root-level `release-metadata.json` (`config.js` and page tokens are build artifacts — do not edit them by hand). CI builds resolve the main desktop release and the separately pinned RN mobile release from GitHub. Offline previews use local snapshots; visitors do not query GitHub. The desktop snapshot remains planned until the main release is available. A client release does not automatically trigger this repository's Pages deployment.
 
 Local development preview uses the exact same rendering pipeline as deployment:
 
@@ -65,8 +65,10 @@ Copy is based on the Clarora client README and platform/sync documentation; when
 
 ## Mobile Release Metadata
 
-Android shows a download based on whether the latest Release includes `Clarora-android.apk`, even if the local status is still planned. iOS reads the channel from the `release-metadata.json` attached to that Release, requiring version/tag/source_sha to match; only explicitly released TestFlight or App Store URLs are accepted — plain IPA downloads are not offered. When no channel exists or the URL is invalid, a build guide is shown instead.
+Desktop downloads follow the main latest release. `mobile_release` independently pins the RN mobile tag, version and source SHA, currently `v0.2.1`; future `rn-vX.Y.Z` tags are also supported. Online builds verify that release's APK and metadata. Mobile cards retain their own version and RN label when the desktop release has no APK. An explicit metadata file may include `mobile_release`; otherwise the pinned local mobile snapshot is used.
 
-Example iOS entry for an explicit metadata file: `"ios": {"status": "released", "channel": "testflight", "url": "https://testflight.apple.com/join/AbCd1234"}` (example URL, not for production). Android example: `"android": {"status": "released", "asset_name": "Clarora-android.apk", "url": "https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-android.apk"}`. Set released only after confirming the channel is open.
+iOS reads the channel from metadata attached to that RN release, requiring version/tag/source_sha to match; only explicitly released TestFlight or App Store URLs are accepted. Plain IPA downloads are not offered. When no channel exists or the URL is invalid, a build guide is shown instead. Local desktop snapshots remain planned until the main release is available; an old RN desktop package is never used as the main release.
+
+Channel entries belong under `mobile_release.platforms`. Example iOS entry: `"ios": {"status": "released", "channel": "testflight", "url": "https://testflight.apple.com/join/AbCd1234"}` (example URL, not for production). The Android APK currently belongs to RN `v0.2.1`, not the main desktop version's asset directory. Set released only after confirming the channel is open.
 
 Client releases do not automatically trigger this repository's Pages; trigger the website build and deploy separately.

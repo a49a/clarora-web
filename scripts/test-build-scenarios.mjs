@@ -18,6 +18,14 @@ const fail = (name, detail) => { failures += 1; console.error(`✗ ${name}${deta
 async function makeWorkspace() {
   const dir = await mkdtemp(path.join(os.tmpdir(), "clarora-site-"));
   for (const item of inputs) await cp(path.join(repo, item), path.join(dir, item), { recursive: true });
+  // Keep the existing single-release schema fixtures independent of the pinned
+  // production RN channel. The split-channel builds have their own E2E matrix.
+  const metadataFile = path.join(dir, "release-metadata.json");
+  const metadata = JSON.parse(await readFile(metadataFile, "utf8"));
+  delete metadata.mobile_release;
+  metadata.platforms.macos.status = "released";
+  metadata.platforms.windows.status = "released";
+  await writeFile(metadataFile, JSON.stringify(metadata));
   return dir;
 }
 
@@ -204,11 +212,12 @@ async function main() {
   }
   {
     const dir = await makeWorkspace();
+    const local = JSON.parse(await readFile(path.join(dir, "release-metadata.json"), "utf8"));
     const build = buildWithApiFixture(dir, "none", true);
     const meta = distMetadata(dir);
-    build.status === 0 && meta.version === "0.1.0" && meta.source_sha === "da3b312"
-      ? pass("GitHub API: 拉取失败回退本地元数据(v0.1.0)")
-      : fail("GitHub API: 回退", `build=${build.status} version=${meta.version}`);
+    build.status === 0 && meta.version === local.version && meta.source_sha === local.source_sha
+      ? pass(`GitHub API: 拉取失败回退本地元数据(${local.tag})`)
+      : fail("GitHub API: 回退", `build=${build.status} version=${meta.version} expected=${local.version} source=${meta.source_sha} expectedSource=${local.source_sha}`);
     await rm(dir, { recursive: true, force: true });
   }
 

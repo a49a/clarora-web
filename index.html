@@ -563,21 +563,21 @@
               <h3>安装与故障处理</h3>
               <div class="build-tabs" role="tablist" aria-label="安装故障处理">
                 <ul class="troubleshoot-list">
-                  <li><strong>macOS 打开被拦：</strong>安装包未做代码签名。首次打开若被 Gatekeeper 拦截，在「访达 → 应用程序」中右键 Clarora 选「打开」，或在终端执行
+                  <li><strong>macOS 打开被拦：</strong>当前发行未做 Apple 公证。首次打开若被 Gatekeeper 拦截，在「访达 → 应用程序」中右键 Clarora 选「打开」，或在终端执行
                     <code>xattr -dr com.apple.quarantine /Applications/Clarora.app</code>。运行时库已内置，无需 Homebrew。</li>
-                  <li><strong>Windows 侧载安装：</strong>解压 zip 后，先在「设置 → 隐私和安全性 → 开发者选项」开启开发者模式，再右键运行包内 <code>Add-AppDevPackage.ps1</code>，依赖包会一并安装。SmartScreen 提示选择「仍要运行」。</li>
-                  <li><strong>端侧转写不可用：</strong>v0.1.0 的 Windows 包已内置转写组件；macOS 首次使用需在「设置 → 字幕转写引擎」下载模型。仍不可用时检查系统是否允许麦克风。</li>
-                  <li><strong>升级保留数据：</strong>学习数据存于本机数据库与所选云存储，覆盖安装不会丢失；跨大版本升级前建议先做一次「备份本机资料」。</li>
+                  <li><strong>Windows 安装：</strong>运行安装器即可按用户安装；便携 ZIP 解压后运行 Clarora，无需开发者模式或侧载脚本。运行库随包提供，未签名安装包可能触发 SmartScreen 提示。</li>
+                  <li><strong>端侧转写不可用：</strong>桌面包内置转写组件，语音模型在设置中另行下载；可在「运行环境」查看组件状态。录音不可用时检查麦克风权限。</li>
+                  <li><strong>升级与资料：</strong>本机学习资料与应用安装目录分开保存；升级或切换 RN 版本前，可先在应用内导出备份。</li>
                 </ul>
               </div>
             </div>
             <div class="build-guide-top">
               <h3>平台差异与更新记录</h3>
               <ul class="troubleshoot-list">
-                <li><strong>macOS：</strong>功能最完整——视频学习与双字幕同显、目录批量导入、命令导入、音频合并。</li>
-                <li><strong>Windows：</strong>视频学习使用系统播放器（截取保存音视频，不保留内嵌字幕轨）；Shell 命令导入不开放。</li>
-                <li><strong>Android / iOS：</strong>移动学习页复用桌面数据；不做 Anki 导入与本地大文件学习，桌面导入的卡片与资料经「同步与备份」下发。</li>
-                <li><strong>更新记录：</strong>v0.1.0（2026-09-18）首个公开版本——闪卡复习、音频学习、端侧字幕、口语跟读、PDF 阅读、自有存储备份、Anki 导入（桌面端）。
+                <li><strong>macOS / Windows：</strong>默认桌面下载为 Clarora 主版本，两平台使用相同的本机播放器与字幕学习界面。</li>
+                <li><strong>RN 版本：</strong>历史桌面发行保留在 Releases 中，标题带 RN，便于与主版本区分。</li>
+                <li><strong>Android / iOS RN：</strong>移动端保留独立版本与分发入口；平台能力和安装渠道以对应 RN 发行说明为准。</li>
+                <li><strong>更新记录：</strong>RN v0.1.0（2026-09-18）首个公开版本——闪卡复习、音频学习、端侧字幕、口语跟读、PDF 阅读、自有存储备份、Anki 导入（桌面端）。
                   后续版本见 <a href="https://github.com/a49a/clarora/releases">Releases 页面 ↗</a>。</li>
               </ul>
             </div>
@@ -629,14 +629,15 @@
             >
               <!-- 无 JS 时的默认文案（macOS），与 site.js 中 guides 对象的 macos 项保持同步 -->
               <p id="build-requirements">
-                需要 Node.js 24、Xcode、CocoaPods 和
-                libmpv。克隆源码后，在仓库根目录执行：
+                需要 Rust 1.93.1、Xcode Command Line Tools 和
+                Homebrew。克隆源码后，在仓库根目录构建桌面主版本：
               </p>
               <div class="code-box">
-                <pre><code id="build-command">npm run setup
-npm start
-# 另开一个终端
-npm run macos</code></pre>
+                <pre><code id="build-command">brew install mpv ffmpeg yt-dlp
+sh clarora-gpui/scripts/package-macos.sh
+python3 clarora-gpui/scripts/install-pdfium.py clarora-gpui/target/Clarora.app/Contents/MacOS
+codesign --force --deep --sign - clarora-gpui/target/Clarora.app
+open clarora-gpui/target/Clarora.app</code></pre>
                 <button id="copy-command" aria-label="复制构建命令">
                   复制命令
                 </button>
@@ -644,7 +645,7 @@ npm run macos</code></pre>
               <p class="build-note">
                 各平台能力有所差异，源码可构建不等于完成设备验收。<a
                   id="platform-docs"
-                  href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md"
+                  href="https://github.com/a49a/clarora/blob/HEAD/clarora-gpui/README.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   >阅读详细平台说明 ↗</a

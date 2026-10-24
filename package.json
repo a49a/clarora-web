@@ -11,7 +11,7 @@
     "prebuild": "node scripts/check-site.mjs",
     "postbuild": "node scripts/check-site.mjs --dist",
     "check:browser": "node scripts/browser-check.mjs",
-    "test:build": "node scripts/test-build-scenarios.mjs"
+    "test:build": "node scripts/test-build-scenarios.mjs && node scripts/test-release-routing.mjs"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

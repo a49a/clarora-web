@@ -3,7 +3,7 @@
 // 本地需要 npx playwright install chromium;CI 在 pages.yml 中安装。
 import { chromium } from "playwright";
 import { createServer } from "node:http";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..", "dist");
@@ -38,10 +38,14 @@ try {
 const releasedNames = Object.entries(metadata.platforms)
   .filter(([, p]) => p.status === "released")
   .map(([name]) => name);
+const evidence = process.env.CLARORA_BROWSER_EVIDENCE;
+const downloads = [];
 
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage();
+  // Verify the actual new-tab target without downloading large installers.
+  await page.context().route("https://github.com/a49a/clarora/releases/download/**", route => route.fulfill({ status: 200, contentType: "text/html", body: "Verified download target" }));
 
   // 1) 下载交互:已发布平台使用元数据解析出的下载地址并新标签打开;
   //    待发布平台指向构建指南。
@@ -54,6 +58,13 @@ try {
       if (href !== expected) fail(`${name} 下载链接与元数据不一致:${href}`);
       else pass(`${name} 下载链接指向 ${expected.slice(0, 48)}…`);
       if ((await link.getAttribute("target")) !== "_blank") fail(`${name} 下载链接应在新标签页打开`);
+      const badge = await page.locator(`[data-status="${name}"]`).innerText();
+      if (!badge.includes(p.version) || (p.family === "rn") !== badge.includes("RN") || badge.includes("GPUI")) fail(`${name} 版本或客户端标记不一致:${badge}`);
+      const [popup] = await Promise.all([page.waitForEvent("popup"), link.click()]);
+      await popup.waitForLoadState();
+      if (popup.url() !== expected) fail(`${name} 实际点击未打开固定来源:${popup.url()}`);
+      downloads.push({platform: name, url: popup.url(), version: p.version, tag: p.tag, family: p.family, badge});
+      await popup.close();
     } else {
       const href = await link.getAttribute("href");
       if (href?.includes("releases/download/")) fail(`${name} 未发布却渲染了安装包链接`);
@@ -87,6 +98,25 @@ try {
   );
   if (overflow > 1) fail(`手机布局存在 ${overflow}px 横向溢出`);
   else pass("手机布局无横向溢出");
+  const noJs = await browser.newPage({javaScriptEnabled: false});
+  await noJs.goto(base);
+  for (const download of downloads) {
+    const href = await noJs.locator(`a[data-download="${download.platform}"]`).getAttribute("href");
+    const badge = await noJs.locator(`[data-status="${download.platform}"]`).innerText();
+    if (href !== download.url || !badge.includes(download.version) || (download.family === "rn") !== badge.includes("RN")) fail(`${download.platform} 无JS版本或来源不一致`);
+  }
+  const expectedDocs = `${metadata.repository}/blob/HEAD/clarora-gpui/README.md`;
+  const docsHref = await noJs.locator("#platform-docs").getAttribute("href");
+  if (docsHref !== expectedDocs) fail(`无JS默认桌面说明指向错误文档:${docsHref}`);
+  else pass("无JS默认桌面说明指向主版本文档");
+  if (evidence) {
+    await mkdir(evidence, { recursive: true });
+    await page.locator("#download").screenshot({ path: path.join(evidence, "downloads-desktop.png") });
+    await mobile.locator("#download").screenshot({ path: path.join(evidence, "downloads-mobile.png") });
+    await noJs.locator("#download").screenshot({path: path.join(evidence, "downloads-no-js.png")});
+    await writeFile(path.join(evidence, "browser-report.json"), JSON.stringify({passed: failures === 0, scope: "local built site; remote downloads intercepted", downloads, no_js_desktop_docs: docsHref, mobile_overflow: overflow}, null, 2) + "\n");
+  }
+  await noJs.close();
 
   if (failures > 0) { console.error(`\n${failures} 项浏览器检查未通过`); process.exit(1); }
   console.log("\n浏览器交互检查全部通过");

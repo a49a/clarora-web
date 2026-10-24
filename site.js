@@ -14,7 +14,7 @@ const repo = isHttps(config.repository)
 $$(".repo-link").forEach((link) => {
   link.href = repo;
 });
-$("#platform-docs").href = `${repo}/blob/HEAD/docs/platform-builds.md`;
+$("#platform-docs").href = `${repo}/blob/HEAD/clarora-gpui/README.md`;
 $("#year").textContent = new Date().getFullYear();
 
 // All demo content is local and illustrative; no AI calls or learner data.
@@ -112,29 +112,30 @@ document.addEventListener("visibilitychange", () => {
 const guides = {
   macos: {
     requirements:
-      "需要 Node.js 24、Xcode、CocoaPods 和 libmpv。克隆源码后，在仓库根目录执行：",
-    command: "npm run setup\nnpm start\n# 另开一个终端\nnpm run macos",
+      "需要 Rust 1.93.1、Xcode Command Line Tools 和 Homebrew。克隆源码后，在仓库根目录构建桌面主版本：",
+    command: "brew install mpv ffmpeg yt-dlp\nsh clarora-gpui/scripts/package-macos.sh\npython3 clarora-gpui/scripts/install-pdfium.py clarora-gpui/target/Clarora.app/Contents/MacOS\ncodesign --force --deep --sign - clarora-gpui/target/Clarora.app\nopen clarora-gpui/target/Clarora.app",
   },
   windows: {
     requirements:
-      "需要 Node.js 24、Visual Studio 2022、Windows SDK 和 .NET 8。在 Windows 上克隆源码后执行：",
+      "需要 Rust 1.93.1 MSVC、Visual Studio 2022 C++、Windows SDK、Python 3、CMake、7-Zip 和 Inno Setup 6。在 x64 开发者 PowerShell 中构建桌面主版本：",
     command:
-      "npm run setup\nnpm start\n# 另开一个终端\nnpm run windows\n# 生成未签名 Release 包\nnpm run windows:build",
+      "cd clarora-gpui\n./scripts/prepare-windows-runtime.ps1\n./scripts/build-windows.ps1 -Distribution -RuntimeDir ./target/windows-runtime -Installer",
   },
   android: {
     requirements:
-      "需要 Node.js 24、Android Studio、Android SDK、JDK 17 和模拟器或真机。克隆源码后执行：",
+      "RN 移动端需要 Node.js 24、Android Studio、Android SDK、JDK 17 和模拟器或真机。克隆源码后执行：",
     command: "npm run setup\nnpm start\n# 另开一个终端\nnpm run android",
   },
   ios: {
     requirements:
-      "需要 macOS、Node.js 24、Xcode 的 iOS 平台组件和 CocoaPods。克隆源码后执行：",
+      "RN 移动端需要 macOS、Node.js 24、Xcode 的 iOS 平台组件和 CocoaPods。克隆源码后执行：",
     command:
       "npm run setup\ncd clarora-app\nLC_ALL=en_US.UTF-8 npm run ios:pods\nnpm start\n# 另开终端，在 clarora-app 目录执行\nnpm run ios",
   },
 };
 function selectPlatform(name) {
   if (!guides[name]) return;
+  $("#platform-docs").href = `${repo}/blob/HEAD/${name === "android" || name === "ios" ? "docs/platform-builds.md" : "clarora-gpui/README.md"}`;
   $$("[data-platform]").forEach((button) => {
     const active = button.dataset.platform === name;
     button.setAttribute("aria-selected", String(active));
@@ -177,7 +178,7 @@ $$("[data-download]").forEach((link) => {
     link.rel = "noopener noreferrer";
     link.textContent = platform === "ios" ? (release.channel === "testflight" ? "加入 TestFlight ↗" : "前往 App Store ↗") : "下载客户端 ↗";
     $(`[data-status="${platform}"]`).textContent =
-      release.version || "安装包已发布";
+      release.version ? `${release.version}${release.family === "rn" ? " RN" : ""}` : "安装包已发布";
   } else {
     link.addEventListener("click", () => {
       selectPlatform(platform);

@@ -1,32 +1,49 @@
 {
-  "version": "0.1.0",
-  "tag": "v0.1.0",
-  "source_sha": "da3b312",
+  "version": "0.2.2",
+  "tag": "v0.2.2",
+  "source_sha": "65a620e857f858b0bd0f823141c64560373ffd5d",
   "repository": "https://github.com/a49a/clarora",
-  "assets_base": "https://github.com/a49a/clarora/releases/download/v0.1.0",
-  "latest_url": "https://github.com/a49a/clarora/releases/latest",
+  "assets_base": "https://github.com/a49a/clarora/releases/download/v0.2.2",
+  "latest_url": "https://github.com/a49a/clarora/releases/tag/v0.2.2",
   "platforms": {
     "macos": {
       "arch": "arm64",
       "asset_name": "Clarora-macos-arm64.dmg",
       "status": "released",
-      "requirements": "macOS 14+,Apple Silicon"
+      "requirements": "macOS 14+,Apple Silicon",
+      "url": "https://github.com/a49a/clarora/releases/download/v0.2.2/Clarora-macos-arm64.dmg"
     },
     "windows": {
       "arch": "x64",
       "asset_name": "Clarora-windows-x64.zip",
       "status": "released",
-      "requirements": "Windows 10 2004+,开发者模式侧载"
+      "requirements": "Windows 10 1809+,安装器或便携 ZIP",
+      "url": "https://github.com/a49a/clarora/releases/download/v0.2.2/Clarora-windows-x64.zip"
     },
     "android": {
       "asset_name": "Clarora-android.apk",
       "arch": "universal",
-      "status": "released",
+      "status": "planned",
       "requirements": "Android 8+"
     },
     "ios": {
       "status": "planned",
       "requirements": "iOS 15.1+,需设备验证"
+    }
+  },
+  "mobile_release": {
+    "version": "0.2.1",
+    "tag": "v0.2.1",
+    "source_sha": "206b2d4e1ec9a734910a774d25147ac39065dc2c",
+    "platforms": {
+      "android": {
+        "status": "released",
+        "asset_name": "Clarora-android.apk",
+        "url": "https://github.com/a49a/clarora/releases/download/v0.2.1/Clarora-android.apk"
+      },
+      "ios": {
+        "status": "planned"
+      }
     }
   }
 }

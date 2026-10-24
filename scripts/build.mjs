@@ -26,22 +26,35 @@ function iosChannel(entry) {
   return (entry.channel === "testflight" && u.hostname === "testflight.apple.com" && /^\/join\/[A-Za-z0-9]+$/.test(u.pathname))
     || (entry.channel === "app-store" && u.hostname === "apps.apple.com" && /\/id[0-9]+$/.test(u.pathname));
 }
+function mobileIdentity(release) {
+  if (!/^\d+\.\d+\.\d+$/.test(release.version ?? "")
+    || ![`v${release.version}`, `rn-v${release.version}`].includes(release.tag)
+    || !/^[0-9a-f]{7,40}$/.test(release.source_sha ?? "")) {
+    throw new ReleaseMetadataError("RN 发布版本、tag 或来源非法");
+  }
+  return release;
+}
 function mergeRemote(local, remote) {
   if (!/^\d+\.\d+\.\d+$/.test(remote.version ?? "")) throw new Error("远端元数据 version 非法:" + remote.version);
   if (remote.tag !== "v" + remote.version) throw new Error("远端元数据 tag(" + remote.tag + ") 与 version(" + remote.version + ") 不一致");
   if (!/^[0-9a-f]{7,40}$/.test(remote.source_sha ?? "")) throw new Error("远端元数据 source_sha 缺失或非法");
+  const mobile = remote.mobile_release ?? local.mobile_release;
+  if (mobile) mobileIdentity(mobile);
   const platforms = {};
   for (const [name, conf] of Object.entries(local.platforms)) {
-    const entry = remote.platforms?.[name];
+    const isMobile = name === "android" || name === "ios";
+    const origin = isMobile && mobile ? mobile : remote;
+    const identity = { version: origin.version, tag: origin.tag, source_sha: origin.source_sha, family: isMobile ? "rn" : "main" };
+    const entry = origin.platforms?.[name];
     const url = typeof entry?.url === "string" ? entry.url : "";
     if (entry?.status === "released" && validUrl(url) && (name !== "ios" || iosChannel(entry))) {
       const assetName = typeof entry.asset_name === "string" && entry.asset_name ? entry.asset_name : url.split("/").pop();
-      platforms[name] = { ...conf, ...entry, status: "released", url, asset_name: assetName };
+      platforms[name] = { ...conf, ...entry, ...identity, status: "released", url, asset_name: assetName };
     } else {
       if (conf.status === "released") {
         console.warn(`平台 ${name} 在远端元数据中${entry ? "没有可用的下载地址" : "缺失"},按待发布渲染`);
       }
-      platforms[name] = { ...conf, status: "planned", url: undefined, channel: undefined };
+      platforms[name] = { ...conf, ...identity, status: "planned", url: undefined, channel: undefined };
     }
   }
   return {
@@ -51,8 +64,54 @@ function mergeRemote(local, remote) {
     source_sha: remote.source_sha,
     assets_base: remote.assets_base ?? "https://github.com/a49a/clarora/releases/download/" + remote.tag,
     latest_url: remote.latest_url ?? "https://github.com/a49a/clarora/releases/tag/" + remote.tag,
+    ...(mobile ? { mobile_release: mobile } : {}),
     platforms,
   };
+}
+
+// Mobile clients keep their own RN release; a desktop-only latest must not
+// remove an already released APK or attribute it to the desktop version.
+async function fetchMobileMetadata(local) {
+  const reference = mobileIdentity(local.mobile_release);
+  const unavailable = { ...reference, platforms: {} };
+  const headers = { "User-Agent": "clarora-web-build" };
+  try {
+    const response = await fetch(`https://api.github.com/repos/a49a/clarora/releases/tags/${reference.tag}`, { headers, signal: AbortSignal.timeout(10_000) });
+    if (!response.ok) return unavailable;
+    const release = await response.json();
+    if (release.draft || release.prerelease) return unavailable;
+    if (release.tag_name !== reference.tag) throw new ReleaseMetadataError("RN 发布 tag 与指定来源不匹配");
+    const commitResponse = await fetch(`https://api.github.com/repos/a49a/clarora/commits/${reference.tag}`, { headers, signal: AbortSignal.timeout(10_000) });
+    if (!commitResponse.ok) return unavailable;
+    const commit = await commitResponse.json();
+    if (commit.sha !== reference.source_sha) throw new ReleaseMetadataError("RN 发布来源 SHA 与指定版本不匹配");
+    const assetsBase = `${local.repository}/releases/download/${reference.tag}`;
+    const assets = release.assets ?? [];
+    const platforms = {};
+    const apkName = local.platforms.android.asset_name;
+    const apk = assets.find(asset => asset.name === apkName);
+    if (apk) {
+      if (apk.browser_download_url !== `${assetsBase}/${apkName}`) throw new ReleaseMetadataError("RN Android 资产 URL 与指定来源不匹配");
+      platforms.android = { status: "released", asset_name: apkName, url: apk.browser_download_url };
+    }
+    const metadata = assets.find(asset => asset.name === "release-metadata.json");
+    if (metadata) {
+      const url = `${assetsBase}/release-metadata.json`;
+      if (metadata.browser_download_url !== url) throw new ReleaseMetadataError("RN 发布元数据资产 URL 不匹配");
+      const result = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+      if (!result.ok) return { ...reference, platforms };
+      const declared = await result.json();
+      if (declared.tag !== reference.tag || declared.version !== reference.version || declared.source_sha !== reference.source_sha) {
+        throw new ReleaseMetadataError("RN 发布元数据版本或来源不匹配");
+      }
+      if (declared.platforms?.ios?.status === "released" && iosChannel(declared.platforms.ios)) platforms.ios = declared.platforms.ios;
+    }
+    return { ...reference, platforms };
+  } catch (error) {
+    if (error instanceof ReleaseMetadataError) throw error;
+    console.warn("RN 发布读取失败，移动平台按待发布渲染: " + error.message);
+    return unavailable;
+  }
 }
 
 async function fetchLatestMetadata(local) {
@@ -63,6 +122,9 @@ async function fetchLatestMetadata(local) {
   if (!res.ok) throw new Error("GitHub API " + res.status);
   const release = await res.json();
   if (release.draft || release.prerelease) throw new Error("最新 Release 是草稿或预发布,跳过");
+  if (/^rn-/.test(release.tag_name) || /^Clarora RN(?:\s|$)/i.test(release.name ?? "")) {
+    throw new ReleaseMetadataError("最新发行仍是 RN，请先发布 Clarora 主版本");
+  }
   const assets = release.assets ?? [];
   // 版本详情直接采用 API 的 html_url(tag_name 拼出的 /releases/<tag> 少了 /tag/ 段)
   if (typeof release.html_url !== "string" || !release.html_url.startsWith("https://github.com/")) {
@@ -82,6 +144,7 @@ async function fetchLatestMetadata(local) {
   // 平台状态以最新 Release 的实际资产为准(降级与告警统一由 mergeRemote 处理)。
   const platforms = {};
   for (const [name, conf] of Object.entries(local.platforms)) {
+    if (local.mobile_release && (name === "android" || name === "ios")) continue;
     const asset = name !== "ios" && conf.asset_name ? assets.find(a => a.name === conf.asset_name) : null;
     if (asset) {
       platforms[name] = { ...conf, status: "released", url: asset.browser_download_url };
@@ -101,7 +164,7 @@ async function fetchLatestMetadata(local) {
     if (declared.tag !== release.tag_name || declared.version !== release.tag_name.replace(/^v/, "") || declared.source_sha !== sourceSha) {
       throw new ReleaseMetadataError("发布元数据版本或来源不匹配");
     }
-    if (declared.platforms?.ios?.status === "released" && iosChannel(declared.platforms.ios)) {
+    if (!local.mobile_release && declared.platforms?.ios?.status === "released" && iosChannel(declared.platforms.ios)) {
       platforms.ios = declared.platforms.ios;
     }
   }
@@ -111,24 +174,28 @@ async function fetchLatestMetadata(local) {
     source_sha: sourceSha,
     assets_base: assetsBase,
     latest_url: release.html_url,
+    ...(local.mobile_release ? { mobile_release: await fetchMobileMetadata(local) } : {}),
     platforms,
   };
 }
 
 async function loadMetadata() {
   const local = await loadLocalMetadata();
+  const snapshot = () => mergeRemote(local, { ...local, platforms: Object.fromEntries(Object.entries(local.platforms).map(([name, entry]) => [name,
+    entry.status === "released" && !entry.url && entry.asset_name && name !== "ios"
+      ? { ...entry, url: `${local.assets_base}/${entry.asset_name}` } : entry])) });
   const metadataFile = process.env.CLARORA_RELEASE_METADATA;
   if (metadataFile) {
     const remote = JSON.parse(await readFile(pathToFileURL(metadataFile), "utf8"));
     return mergeRemote(local, remote);
   }
-  if (!process.env.CLARORA_FETCH_RELEASE && !process.env.CI) return local;
+  if (!process.env.CLARORA_FETCH_RELEASE && !process.env.CI) return snapshot();
   try {
     return mergeRemote(local, await fetchLatestMetadata(local));
   } catch (err) {
     if (err instanceof ReleaseMetadataError) throw err;
     console.warn("GitHub Releases 拉取失败,使用本地 release-metadata.json: " + err.message);
-    return local;
+    return snapshot();
   }
 }
 
@@ -136,9 +203,10 @@ async function loadMetadata() {
 const tokenFor = (metadata, name) => {
   const p = metadata.platforms[name];
   const released = p.status === "released";
+  const version = `${p.version ?? metadata.version}${p.family === "rn" ? " RN" : ""}`;
   const label = name === "ios" ? (p.channel === "testflight" ? "加入 TestFlight" : "前往 App Store") : name === "windows" ? "下载安装包" : "下载客户端";
   return {
-    badge: released ? metadata.version + (name === "ios" ? " 渠道已开放" : " 可下载") : "安装包待发布",
+    badge: released ? version + (name === "ios" ? " 渠道已开放" : " 可下载") : p.family === "rn" ? version + " · 安装包待发布" : "安装包待发布",
     href: released ? p.url : "#build-guide",
     label: released ? label : "查看构建指南",
   };
@@ -179,7 +247,7 @@ export async function buildSite() {
 
   // dist/config.js:运行时增强读取同一元数据来源
   const downloads = Object.fromEntries(Object.entries(metadata.platforms).map(([name, p]) => [name,
-    p.status === "released" ? {url: p.url, version: metadata.version, channel: p.channel} : null]));
+    p.status === "released" ? {url: p.url, version: p.version, tag: p.tag, family: p.family, channel: p.channel} : null]));
   const configJs = "window.CLARORA_SITE = " + JSON.stringify({repository: metadata.repository,
     latestUrl: metadata.latest_url, version: metadata.version, downloads}, null, 2) + ";\n";
   await writeFile(new URL("config.js", out), configJs);

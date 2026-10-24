@@ -39,8 +39,8 @@ npm run build
 
 下载信息唯一来源是根目录的 `release-metadata.json`（`config.js` 与页面令牌都是
 构建产物，不要手改）。CI 在线构建会先从 GitHub Releases API 拉取最新版本合并到
-这份元数据上；本地无网络时直接使用本地文件。发布新版本通常不需要改这个仓库——
-部署工作流会自动带上新版本号、固定下载链接和来源 SHA。
+这份元数据上，桌面默认使用主版本；本地无网络时使用本地快照。主版本尚未发布时，
+本地桌面入口保留待发布状态，不使用旧 RN 桌面安装包。客户端发布后需另行触发官网部署。
 
 本地开发预览使用与部署完全相同的渲染管线：
 
@@ -63,14 +63,16 @@ CLARORA_RELEASE_METADATA=/path/to/release-metadata.json npm run build
 - 交互示意：翻卡、收藏、无音频的字幕进度演示，以及预设 AI 问答。
 - 四平台状态与构建指南、命令复制、数据与同步 FAQ。
 
-功能示意不会发送 AI 请求或持久化学习数据。主要内容在禁用 JavaScript 时仍可阅读。发布状态通过配置维护，不自动查询 GitHub。
+功能示意不会发送 AI 请求或持久化学习数据。主要内容在禁用 JavaScript 时仍可阅读。发布状态在构建时从配置与 GitHub 解析；离线预览使用本地快照，访客浏览时不查询 GitHub。
 
 文案基于 Clarora 客户端 README 与平台、同步文档；客户端能力变化时同步更新官网，避免把源码支持描述为已完成安装包或真机验收。
 
 ## 移动端发布元数据
 
-Android 根据最新 Release 是否包含 `Clarora-android.apk` 显示下载，即使本地状态仍为 planned 也可识别。iOS 从该 Release 附带的 `release-metadata.json` 读取渠道，要求 version/tag/source_sha 与 Release 对应；仅接受明确 released 的 TestFlight 或 App Store URL，不提供普通 IPA 下载。没有渠道或 URL 不合法时显示构建指南。
+`mobile_release` 显式固定移动端的 RN tag、版本与来源 SHA，当前为 `v0.2.1`；历史 `vX.Y.Z` 和未来 `rn-vX.Y.Z` 均可指定。在线构建核对该 RN Release 的真实 APK 与元数据，主版本没有 APK 不会撤掉独立 RN 移动入口。移动卡片显示自己的版本与 RN 标记，桌面使用主版本，不显示实现框架标记。
 
-显式元数据文件的 iOS 示例：`"ios": {"status": "released", "channel": "testflight", "url": "https://testflight.apple.com/join/AbCd1234"}`（示例地址不能直接用于生产）。Android 示例：`"android": {"status": "released", "asset_name": "Clarora-android.apk", "url": "https://github.com/a49a/clarora/releases/download/v0.1.0/Clarora-android.apk"}`。只有确认渠道已开放后才能设置 released。
+iOS 从指定 RN Release 附带的 `release-metadata.json` 读取渠道，要求 version/tag/source_sha 对应；仅接受明确 released 的 TestFlight 或 App Store URL，不提供普通 IPA 下载。没有渠道或 URL 不合法时显示构建指南。显式元数据文件可携带同结构 `mobile_release`，否则使用本地固定的移动快照；不会从主版误取 APK。
+
+渠道信息放在 `mobile_release.platforms` 内。例如 iOS：`"ios": {"status": "released", "channel": "testflight", "url": "https://testflight.apple.com/join/AbCd1234"}`（示例地址不能用于生产）。当前 Android APK 固定在 RN `v0.2.1`，不能拼接主版本的资产目录。只有确认渠道已开放后才能设置 released。
 
 客户端发布不会自动触发本仓库 Pages；需另行触发官网构建部署。

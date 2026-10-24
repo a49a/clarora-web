@@ -87,8 +87,12 @@ if (checkDist && fs.existsSync(distIndex)) {
   // 逐平台:released 必须渲染可下载徽标与解析后的下载地址;非 released
   // 不得出现安装包链接。
   for (const [name, p] of Object.entries(distMeta.platforms)) {
+    if (p.family !== (name === "android" || name === "ios" ? "rn" : "main")) fail(`${name} family 与客户端类型不一致`);
+    if (!/^\d+\.\d+\.\d+$/.test(p.version ?? "") || ![`v${p.version}`, `rn-v${p.version}`].includes(p.tag)
+      || !/^[0-9a-f]{7,40}$/.test(p.source_sha ?? "")) fail(`${name} 版本或来源信息缺失`);
     if (p.status === "released") {
-      if (!rendered.includes(`${distMeta.version}${name === "ios" ? " 渠道已开放" : " 可下载"}`)) fail(`${name} 卡片未显示可下载版本`);
+      const label = `${p.version}${p.family === "rn" ? " RN" : ""}`;
+      if (!rendered.includes(`${label}${name === "ios" ? " 渠道已开放" : " 可下载"}`)) fail(`${name} 卡片未显示可下载版本`);
       const expected = p.url ?? `${distMeta.assets_base}/${p.asset_name}`;
       if (!rendered.includes(expected.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"))) fail(`${name} 下载链接与元数据不一致`);
     } else if (p.asset_name && rendered.includes(`${p.asset_name}`)) {
