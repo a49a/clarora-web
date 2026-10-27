@@ -58,6 +58,9 @@ The `repository` field points to the client source repository. Unreleased platfo
 - Client feature introductions: flashcards, listening, AI, focus tools, and local materials.
 - Interactive demos: card flip, favorites, subtitle progress (no audio), and preset AI Q&A.
 - Four-platform status with build guides, command copy, and data & sync FAQ.
+- A detailed Chinese handbook at `guide.html`, with 13 topics, step-by-step workflows, a searchable table of contents, copyable examples, and troubleshooting. It remains readable without JavaScript and distinguishes the main desktop client, RN platforms, and newer capabilities.
+
+The homepage links to handbook chapters. Build output includes `guide.html`, `guide.css`, and `guide.js`; guide updates do not change release metadata or platform availability. Run `npm run check`, `npm run build`, `npm run test:build`, and `npm run check:browser`. Set `CLARORA_BROWSER_EVIDENCE` to retain JSON evidence and desktop/mobile screenshots, including no-JS and project-subpath navigation checks.
 
 Feature demos do not send AI requests or persist learning data. Main content remains readable with JavaScript disabled. Release status is maintained via configuration, not queried from GitHub at runtime.
 

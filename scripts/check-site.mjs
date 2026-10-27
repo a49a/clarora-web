@@ -11,7 +11,7 @@ const pass = (message) => console.log(`✓ ${message}`);
 const read = file => fs.readFileSync(path.join(root, file), "utf8");
 
 // 0) 交互脚本语法检查(保留原有 node --check)
-for (const script of ["site.js"]) {
+for (const script of ["site.js", "guide.js"]) {
   const result = spawnSync(process.execPath, ["--check", path.join(root, script)], { encoding: "utf8" });
   if (result.status !== 0) fail(`${script} 语法错误:${result.stderr}`);
   else pass(`${script} 语法正常`);
@@ -55,11 +55,35 @@ for (const match of html.matchAll(/href="#([^"]+)"/g)) {
 }
 internalLinks && pass(`站内锚点 ${internalLinks} 个全部可解析`);
 
-// 4) 凭证表述:不得再声称凭证只存应用数据库
-if (/凭证只存本机应用数据库|凭证仅保存在本机应用数据库/.test(html)) {
-  fail("凭证表述过时:仍声称只存应用数据库(桌面端已使用系统凭证保险库)");
+// The handbook is a real static page; verify relative links and fragments in
+// both source and deployable output, including a project-subpath deployment.
+function checkPages(prefix = "") {
+  for (const file of ["index.html", "guide.html"]) {
+    const source = read(path.join(prefix, file));
+    const ids = [...source.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
+    if (new Set(ids).size !== ids.length) fail(`${prefix}${file} 包含重复 id`);
+    for (const match of source.matchAll(/(?:href|src)="([^"]+)"/g)) {
+      const href = match[1];
+      if (/^(?:https?:|mailto:|data:|__)/.test(href)) continue;
+      const target = new URL(href, `https://local.test/${file}`);
+      const destination = target.pathname === "/" ? "index.html" : target.pathname.slice(1);
+      const absolute = path.join(root, prefix, destination);
+      if (!fs.existsSync(absolute)) fail(`${prefix}${file} 本地资源不存在:${href}`);
+      else if (target.hash && destination.endsWith(".html")) {
+        const body = fs.readFileSync(absolute, "utf8");
+        if (![...body.matchAll(/id="([^"]+)"/g)].some(m => m[1] === target.hash.slice(1))) fail(`${prefix}${file} 跨页锚点不存在:${href}`);
+      }
+    }
+  }
+  pass(`${prefix || "源码/"}首页与完整手册的资源、目录和跨页锚点已检查`);
 }
-pass("凭证表述与实现一致");
+checkPages();
+
+// 4) Storage differs by client/version. Avoid an absolute cross-platform claim.
+if (/凭证只存本机应用数据库|凭证仅保存在本机应用数据库|凭证在 macOS \/ Windows 保存在系统凭证保险库/.test(html)) {
+  fail("凭证表述过时:请说明客户端、版本及可选系统凭证库模式");
+}
+pass("凭证说明未保留过时的统一存储断言");
 
 // 5) 构建产物渲染校验(--dist 时):无 JS 状态、固定链接、版本一致。
 //    比较基准是构建写入 dist/release-metadata.json 的解析结果;
@@ -78,6 +102,9 @@ if (checkDist && fs.existsSync(distIndex)) {
     distMeta = metadata;
   }
   const rendered = read(path.join("dist", "index.html"));
+  checkPages("dist/");
+  const handbook = read("dist/guide.html");
+  if (handbook.includes("__SITE_VERSION__") || !handbook.includes(`v${distMeta.version}`)) fail("手册未使用本次构建的版本信息");
   for (const name of ["macos", "windows", "android", "ios"]) {
     if (rendered.includes(`__${name.toUpperCase()}_BADGE__`)) fail(`dist 中残留未填充令牌:${name}`);
   }

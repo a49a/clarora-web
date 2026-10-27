@@ -62,6 +62,20 @@ CLARORA_RELEASE_METADATA=/path/to/release-metadata.json npm run build
 - 客户端功能介绍：闪卡、听力、AI、专注工具与本地资料。
 - 交互示意：翻卡、收藏、无音频的字幕进度演示，以及预设 AI 问答。
 - 四平台状态与构建指南、命令复制、数据与同步 FAQ。
+- 完整中文使用手册 `guide.html`：13 个主题，覆盖首次使用、安装、AI／本地模型、音频、字幕、视频、闪卡、写作、电子书、跟读／OCR、专注与备份排错。支持目录、关键词搜索、示例复制，禁用 JavaScript 仍可阅读全文；首页保留五个快速操作并链接到具体章节。
+
+手册以桌面主版本为主，RN 与近期新增功能分别注明适用范围。下载版本仍由发布元数据生成，不因教程更新而修改发布状态。补充教程时要核对客户端实际按钮、数据恢复和联网行为，不把最新源码能力写成旧安装包已经包含。
+
+验证页面与构建：
+
+```sh
+npm run check
+npm run build
+npm run test:build
+CLARORA_BROWSER_EVIDENCE=/absolute/path/to/evidence npm run check:browser
+```
+
+浏览器检查包含首页到手册、搜索与目录恢复、剪贴板回退、320–1440px 布局、无 JS 阅读和项目子路径导航，并在指定目录保存 JSON 与截图。`guide.css`、`guide.js` 和手册页面由正常构建一起部署。
 
 功能示意不会发送 AI 请求或持久化学习数据。主要内容在禁用 JavaScript 时仍可阅读。发布状态在构建时从配置与 GitHub 解析；离线预览使用本地快照，访客浏览时不查询 GitHub。
 
