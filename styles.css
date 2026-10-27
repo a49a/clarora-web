@@ -1858,3 +1858,10 @@ details p {
     padding: 16px;
   }
 }
+
+/* 完整手册入口 */
+.manual-promo { display: flex; gap: 24px; align-items: center; justify-content: space-between; margin-top: 24px; padding: 24px; background: #eaf0e0; border-radius: 9px; }
+.manual-promo h3 { font: 500 23px/1.5 var(--serif); margin-bottom: 7px; }
+.manual-promo p { max-width: 630px; font-size: 13px; color: var(--muted); }
+.manual-promo .button { white-space: nowrap; flex-shrink: 0; }
+@media (max-width: 860px) { .manual-promo { flex-direction: column; align-items: flex-start; } }

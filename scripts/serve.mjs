@@ -20,6 +20,9 @@ const types = {
 };
 const allowed = new Set([
   "/index.html",
+  "/guide.html",
+  "/guide.css",
+  "/guide.js",
   "/styles.css",
   "/site.js",
   "/config.js",

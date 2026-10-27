@@ -44,7 +44,7 @@
       >
       <nav aria-label="主导航">
         <a href="#features">认识 Clarora</a><a href="#guide">开始使用</a
-        ><a href="#tutorial">使用教学</a><a href="#faq">常见问题</a>
+        ><a href="./guide.html" data-guide-entry>使用手册</a><a href="#faq">常见问题</a>
       </nav>
       <a class="nav-cta" href="#download"
         >获取客户端 <span aria-hidden="true">↗</span></a
@@ -417,10 +417,10 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">YOUR DAILY WORKFLOW</p>
-            <h2 id="tutorial-title">五个场景，学会日常使用。</h2>
+            <h2 id="tutorial-title">先从五个常用操作开始。</h2>
           </div>
           <p>
-            从导入内容到离线字幕、跟读评分，<br />每一步都在你的设备上完成。
+            先完成一次小练习，再按模块深入。<br />本地处理与远端 AI 的区别，手册里逐步说明。
           </p>
         </div>
         <div class="tutorial-tabs" role="tablist" aria-label="使用教学">
@@ -438,49 +438,48 @@
         </div>
         <div class="tutorial-panel" id="tut-panel-import" role="tabpanel" aria-labelledby="tut-tab-import">
           <ol class="tutorial-steps">
-            <li><strong>导入词卡：</strong>首页闪卡 → 「学习选项」导入文本词卡，每行一个单词，支持 Tab、逗号、<code> - </code> 等分隔符，<code>#</code> 开头的行会被忽略。</li>
-            <li><strong>整目录换卡组：</strong>macOS 可用「导入目录」，以目录为唯一来源整体替换卡组；删掉已学会的单词后重新导入，App 内同步消失。</li>
-            <li><strong>导入 Anki 卡组：</strong>桌面端学习选项 → 「Anki 卡组」，选择 .apkg / .colpkg 文件，笔记清洗为纯文本卡片并合并进词库；填空题自动还原答案。移动端无需导入，桌面导入的卡片经「同步与备份」下发。</li>
-            <li><strong>导入音频：</strong>音频管理 → 添加音频，使用系统文件选择器选择 MP3/M4A/WAV 等；macOS 还支持目录批量导入和命令导入。</li>
-            <li><strong>导入字幕：</strong>字幕支持 SRT / VTT / TXT（TXT 按行估算时间轴），也可直接用「AI 生成字幕」。</li>
-          </ol>
+            <li><strong>准备客户端：</strong>从下载区选择自己的设备，安装后打开桌面主版本。旧包与 RN 的功能入口可能不同。</li>
+            <li><strong>整理一段音频：</strong>进入「音频管理」，新建或选择练习组，再导入 MP3 / M4A / WAV 等文件。</li>
+            <li><strong>配上字幕：</strong>给所选音频导入对应的 SRT / VTT；没有字幕时可按设置选择本地或远端转写。</li>
+            <li><strong>开始精听：</strong>进入「音频学习」，点击字幕定位、调整倍速，选一小段保存为闪卡，之后到复习页再听。</li>
+          </ol><p class="build-note"><a href="./guide.html#quick-start">查看第一次精听的完整步骤 ↗</a></p>
         </div>
         <div class="tutorial-panel" id="tut-panel-subtitles" role="tabpanel" aria-labelledby="tut-tab-subtitles" hidden>
           <ol class="tutorial-steps">
-            <li><strong>下载端侧模型：</strong>设置 → 字幕转写引擎 → 选择模型并下载。SenseVoice 支持中英日韩粤（自动检测语言），Whisper .en 模型适合纯英文；转写完全离线，音频不上传。</li>
-            <li><strong>生成字幕：</strong>听力页或音频管理点「AI 生成字幕」，稍等片刻即可得到带时间轴的字幕。</li>
-            <li><strong>翻译成中文：</strong>点「翻译」生成中英双语字幕——翻译使用「AI 服务」里你配置的聊天模型，逐句对齐原时间轴。</li>
-            <li><strong>收藏片段：</strong>截取喜欢的句子收藏为听力闪卡，复习时自动播放该段音频。</li>
-          </ol>
+            <li><strong>先选转写方式：</strong>本地模型下载后要选用并保存；远端转写需要可用的音频接口。本地转写不等于中文翻译也能离线。</li>
+            <li><strong>生成英文：</strong>选择音频并点「生成字幕」，完成后试听开头与结尾，检查时间轴是否匹配。</li>
+            <li><strong>添加中文：</strong>保存聊天 API 设置后点「翻译成中文」，保留英文和时间轴。新版桌面构建也支持整组音频处理。</li>
+            <li><strong>视频逐句听：</strong>选择 P 并准备字幕，可无限重复本句，或每句播放三遍后自动进入下一句。</li>
+          </ol><p class="build-note"><a href="./guide.html#subtitles">字幕示例与批量规则 ↗</a> · <a href="./guide.html#video">视频精听步骤 ↗</a></p>
         </div>
         <div class="tutorial-panel" id="tut-panel-ai" role="tabpanel" aria-labelledby="tut-tab-ai" hidden>
           <ol class="tutorial-steps">
-            <li><strong>配置 AI 服务：</strong>设置 → AI 服务，填写 OpenAI 兼容的 Base URL、API Key 和聊天模型；也可以指向本机运行的开源模型服务。</li>
-            <li><strong>随选随问：</strong>点右下角「✦ AI 助手」，当前学习内容自动成为引用；选中字幕右键提问（macOS），回答支持流式输出。</li>
-            <li><strong>存为卡片：</strong>把有用的回答「存为 AI 问答卡」，正面是问题与原文，背面是完整回答，进入 SM-2 复习队列。</li>
-            <li><strong>AI 标重点：</strong>听力页「标重点」让 AI 圈出重点词汇，字幕中以高亮标出，点击任意一条跳到对应句子播放。</li>
-          </ol>
+            <li><strong>填写 AI 设置：</strong>输入模型服务提供的 Base URL、API Key 和模型 ID，点击保存，再用简短问答验证。</li>
+            <li><strong>确认引用再提问：</strong>打开「学习助手」，先看当前材料是否正确，再针对字幕、书籍或图片提问。</li>
+            <li><strong>按任务准备能力：</strong>中文翻译和写作批改使用聊天服务，图片识字需要视觉模型；这些远端请求会发送对应材料。</li>
+            <li><strong>保留学习结果：</strong>有用的回答可存为问答卡；写作页可将题目和作答一起提交，保留批改记录。</li>
+          </ol><p class="build-note"><a href="./guide.html#ai-setup">首次配置与模型选择 ↗</a> · <a href="./guide.html#writing">写作使用步骤 ↗</a></p>
         </div>
         <div class="tutorial-panel" id="tut-panel-speaking" role="tabpanel" aria-labelledby="tut-tab-speaking" hidden>
           <ol class="tutorial-steps">
-            <li><strong>录一句跟读：</strong>听力页点「🎤 跟读」，朗读当前句子，播放自动暂停，录完自动转写。</li>
-            <li><strong>对齐评分：</strong>基于识别文本对齐给出完整度 / 准确度 / 语速，并列出漏读、读错与多读的词（识别由端侧引擎或你的转写 API 完成）。</li>
-            <li><strong>教练点评：</strong>AI 根据原文与识别结果给出简短练习建议，只评价文本，不推断发音音质。</li>
-            <li><strong>追踪进步：</strong>跟读记录保存在本机并随资料备份，统计页可看最近 20 次的准确度趋势。</li>
-          </ol>
+            <li><strong>准备参考文本：</strong>进入口语跟读，填写要练习的句子，或从学习材料开始。</li>
+            <li><strong>录下自己的声音：</strong>允许麦克风访问，读完后停止，再使用已保存的转写设置识别录音。</li>
+            <li><strong>查看文本对照：</strong>检查漏词和不同表达，再听、再练。文本匹配分数不能等同于完整的发音评估。</li>
+          </ol><p class="build-note"><a href="./guide.html#speaking">录音、评分与图片识字说明 ↗</a></p>
         </div>
         <div class="tutorial-panel" id="tut-panel-backup" role="tabpanel" aria-labelledby="tut-tab-backup" hidden>
           <ol class="tutorial-steps">
-            <li><strong>准备存储：</strong>设置 → 同步与备份，配置自己的 S3 兼容存储或阿里云 OSS（Bucket + 前缀 + 专用密钥）。不需要 Clarora 账号或服务器。</li>
-            <li><strong>备份本机：</strong>点「备份本机资料」，词卡、音频附件、字幕、收藏、复习计划与统计打包为完整版本上传。</li>
-            <li><strong>换机合并：</strong>新设备配置相同存储位置，读取版本列表后「合并到本机」；复习进度取较晚评分，本机已有内容优先。</li>
-            <li><strong>边界须知：</strong>手动版本备份，不自动传播删除；AI 凭证在桌面端存于系统凭证保险库（macOS 钥匙串 / Windows 凭据库），不进入备份；云端传输走 HTTPS，暂无端到端加密。</li>
-          </ol>
+            <li><strong>先导出本机备份：</strong>在设置中导出含附件的资料 ZIP；升级或换设备前保留一份。</li>
+            <li><strong>需要云端时再配置：</strong>填写自己的 S3 / OSS 存储位置并保存，再手动上传一个版本。</li>
+            <li><strong>换机读取并合并：</strong>另一端使用相同存储位置与前缀，读取版本后合并到本机，核对资料和附件。</li>
+            <li><strong>分开配置密钥：</strong>应用备份不包含 API / 存储密钥。备份不是自动实时双向同步，也不自动传播删除。</li>
+          </ol><p class="build-note"><a href="./guide.html#backup">本机备份、云备份与 RN 迁移 ↗</a></p>
         </div>
-        <p class="build-note">
-          各平台功能有所差异（如命令导入仅 macOS 提供），细节见
-          <a id="tutorial-platform-docs" class="repo-docs-link" href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md" target="_blank" rel="noopener noreferrer">平台说明 ↗</a>。
-        </p>
+        <div class="manual-promo">
+          <div><h3>完整使用手册</h3><p>13 个主题，覆盖安装、模型配置、音视频、写作、电子书、专注与换机。可搜索操作名称，逐步完成，也可以直接查常见问题。</p></div>
+          <a class="button primary" href="./guide.html" data-guide-entry>打开完整手册 <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="build-note">以下以桌面主版本为主，RN 的平台差异见 <a id="tutorial-platform-docs" class="repo-docs-link" href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md" target="_blank" rel="noopener noreferrer">平台说明 ↗</a>。手册中的近期新增操作已单独标记。</p>
       </section>
 
       <section
@@ -682,8 +681,7 @@ open clarora-gpui/target/Clarora.app</code></pre>
           <details>
             <summary>可以离线学习吗？<span aria-hidden="true">+</span></summary>
             <p>
-              已经导入的词卡、音频和字幕可用于本地学习。AI
-              功能需要连接你配置的服务；云存储备份也需要联网。
+              已经导入的资料可以本地学习。下载好模型并选用后，本地字幕转写和语音合成可离线运行；远端 AI、中文翻译、模型下载及云备份需要网络。
             </p>
           </details>
           <details>
@@ -701,7 +699,7 @@ open clarora-gpui/target/Clarora.app</code></pre>
             </summary>
             <p>
               学习资料保存在设备本地，备份时上传到你配置的对象存储。AI
-              请求会把相关内容发送至你选择的模型服务。凭证在 macOS / Windows 保存在系统凭证保险库，移动端暂存本机应用数据库，均不进入云端备份；云端备份使用 HTTPS，尚无端到端加密。
+              请求会把相关内容发送至你选择的模型服务。密钥的存储方式取决于客户端与版本：较新桌面主版本默认使用本机数据库，可选开启系统凭证库保护；RN 参见平台说明。应用导出的资料备份不包含密钥；HTTPS 传输不等于端到端加密。
             </p>
           </details>
           <details>
@@ -709,9 +707,7 @@ open clarora-gpui/target/Clarora.app</code></pre>
               四个平台的功能完全相同吗？<span aria-hidden="true">+</span>
             </summary>
             <p>
-              共享学习页面和数据模型，但原生能力有所差异。例如命令导入仅在 macOS
-              提供，iOS
-              的音频学习库通过备份合并获得。具体能力和构建条件请查看平台说明。
+              桌面主版本与移动端 RN 的模块、导入方式和原生能力有所不同。先选择设备对应的版本，再按使用手册的适用说明操作；较新桌面功能不一定出现在旧包或移动端中。
             </p>
           </details>
           <details>
@@ -749,7 +745,7 @@ open clarora-gpui/target/Clarora.app</code></pre>
           target="_blank"
           rel="noopener noreferrer"
           >GitHub ↗</a
-        ><a href="#guide">使用指南</a
+        ><a href="./guide.html">使用手册</a
         ><span>© <span id="year">2026</span> Clarora</span>
       </div>
     </footer>

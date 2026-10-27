@@ -241,7 +241,7 @@ export async function buildSite() {
 
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
-  for (const file of ["styles.css", "site.js", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
+  for (const file of ["styles.css", "site.js", "guide.css", "guide.js", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
     await copyFile(new URL(file, root), new URL(file, out));
   }
 
@@ -264,6 +264,9 @@ export async function buildSite() {
   html = html.replaceAll("__SITE_VERSION__", metadata.version);
   html = html.replaceAll("__LATEST_URL__", escapeHtml(metadata.latest_url));
   await writeFile(new URL("index.html", out), html);
+  const handbook = (await readFile(new URL("guide.html", root), "utf8"))
+    .replaceAll("__SITE_VERSION__", escapeHtml(metadata.version));
+  await writeFile(new URL("guide.html", out), handbook);
 
   // dist/release-metadata.json:构建实际使用的解析结果,postbuild 的 --dist
   // 校验以这份为准,避免"构建用新版本、检查读本地旧元数据"的错位。
