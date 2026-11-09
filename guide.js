@@ -24,9 +24,13 @@ function filter() {
 }
 search.addEventListener('input', filter);
 function resetSearch() { search.value = ''; filter(); }
+let handledHash = null;
 clear.addEventListener('click', () => { resetSearch(); search.focus(); });
 search.addEventListener('keydown', event => { if (event.key === 'Escape') { resetSearch(); event.preventDefault(); } });
 function showHashTarget() {
+  // A contents link already reset the filter before the browser fired hashchange.
+  // Ignore that one delayed event so it cannot clear a search typed in between.
+  if (handledHash === location.hash) { handledHash = null; return; }
   const target = document.getElementById(location.hash.slice(1));
   if (target?.closest('[data-guide-chapter]')?.hidden) {
     resetSearch();
@@ -36,7 +40,7 @@ function showHashTarget() {
 window.addEventListener('hashchange', showHashTarget);
 document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', () => {
   const target = document.getElementById(link.hash.slice(1));
-  if (target?.closest('[data-guide-chapter]')?.hidden) resetSearch();
+  if (target?.closest('[data-guide-chapter]')?.hidden) { resetSearch(); handledHash = link.hash; }
   if (mobile.matches && contents.contains(link)) contents.open = false;
 }));
 const observer = new IntersectionObserver(entries => {
