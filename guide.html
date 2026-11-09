@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Clarora 完整使用手册：从安装、首次配置到音视频精听、字幕翻译、闪卡、写作、电子书、跟读和备份，按步骤完成自己的学习流程。" />
+    <meta name="description" content="Clarora 完整使用手册：从安装、首次配置到音频精听、视频逐句精听、写作批改、口语题库、字幕翻译、闪卡、电子书、跟读和备份，按步骤完成自己的学习流程。" />
     <meta name="theme-color" content="#f7f8f2" />
     <link rel="canonical" href="https://a49a.github.io/clarora-web/guide.html" />
     <title>使用手册 — Clarora</title>
@@ -24,8 +24,8 @@
       <section class="guide-hero" aria-labelledby="guide-title">
         <p class="eyebrow">CLARORA USER GUIDE</p>
         <h1 id="guide-title">把 Clarora <em>用起来。</em></h1>
-        <p class="guide-lead">从第一段音频开始，到形成自己的学习资料库。<br />找到你要做的事，按步骤完成，再回到每天的练习。</p>
-        <div class="guide-meta"><span>13 个主题</span><span>桌面主版本为主 · RN 差异单独说明</span><span>更新于 2026-10-27</span></div>
+        <p class="guide-lead">从第一段音频开始，到形成自己的学习资料库。<br />音频、视频、写作、口语四条主线，找到你要做的事，按步骤完成，再回到每天的练习。</p>
+        <div class="guide-meta"><span>13 个主题</span><span>桌面主版本为主 · RN 差异单独说明</span><span>更新于 2026-11-09</span></div>
         <div class="guide-hero-actions"><a class="button primary" href="#quick-start">完成第一次精听 <span aria-hidden="true">↓</span></a><a class="text-link" href="./index.html#download">查看下载与版本 ↗</a></div>
         <div class="guide-version-note"><strong>先确认你使用的版本</strong><p>本手册以桌面主版本为主，下载页当前展示的主版本为 <strong>v__SITE_VERSION__</strong>。标有 <span class="guide-badge">新版功能</span> 的操作在早期 v0.2.2 之后加入，旧包可能没有对应入口；是否已包含，请查看你所下载版本的发行说明。Android / iOS RN 的功能和入口可能不同。</p></div>
       </section>
@@ -43,7 +43,7 @@
               <a href="#cards"><span>07</span>闪卡与片段复习</a>
               <a href="#writing"><span>08</span>写作与 AI 批改</a>
               <a href="#reading"><span>09</span>PDF 与电子书</a>
-              <a href="#speaking"><span>10</span>跟读与拍照识字</a>
+              <a href="#speaking"><span>10</span>口语练习与题库</a>
               <a href="#focus"><span>11</span>专注与冥想</a>
               <a href="#backup"><span>12</span>备份、换机与合并</a>
               <a href="#troubleshooting"><span>13</span>常见问题排查</a>
@@ -106,17 +106,38 @@
             <p class="guide-note"><strong>网络与密钥：</strong>选择本地转写时，转写本身不上传音频；远端转写、翻译和 AI 问答会发送相应材料。较新桌面构建的密钥默认保存在本机数据库，可在「密钥存储」开启系统凭证库保护；不同版本与 RN 的方式可能不同。应用导出的资料备份不包含这些密钥，换机后需单独配置。</p>
           </section>
 
-          <section class="guide-chapter" id="audio" data-guide-chapter data-keywords="音频 管理 导入 练习组 改名 目录 命令 悬浮窗 Kokoro 文字转音频" aria-labelledby="audio-title">
-            <p class="chapter-number">04 / AUDIO LIBRARY</p><h2 id="audio-title">把音频整理成练习组</h2>
+          <section class="guide-chapter" id="audio" data-guide-chapter data-keywords="音频 管理 导入 练习组 改名 目录 命令 悬浮窗 Kokoro 文字转音频 精听 盲听 单句循环 每句三遍 三遍 截取片段 当前句 跟随 倍速 句型搜索 整组字幕 后台任务" aria-labelledby="audio-title">
+            <p class="chapter-number">04 / AUDIO STUDY</p><h2 id="audio-title">把一段音频听成自己的材料</h2>
+            <p class="chapter-intro">音频是最容易开始的练习：不必等视频下载，也不要求一次听懂全部。先整理出一段带字幕的材料，再用「整段—单句—片段」三种粒度反复听，最后把值得记住的句子留下来。</p>
+            <h3>准备：先建组，再让字幕对上</h3>
             <ol class="guide-steps">
-              <li><strong>先选组，再导入。</strong>在「音频管理」新建或选择练习组。可按课程、日期、考试或主题分类，避免把所有材料放在同一组。</li>
-              <li><strong>导入并核对名称。</strong>点击「导入音频」选择文件，导入后在当前组找到它。可用搜索、字幕状态筛选和多选整理材料；学习前确认选中的是正确音频。</li>
-              <li><strong>添加对应字幕。</strong>为所选音频导入字幕文件，或进入<a href="#subtitles">字幕生成</a>。导入后试听开头与结尾，确认字幕属于同一份音频。</li>
-              <li><strong>开始或继续精听。</strong>从详情进入学习，调整倍速和循环，点击字幕定位。切回音频管理只负责整理资料；真正的学习操作在「音频学习」。</li>
+              <li><strong>按用途建练习组。</strong>在「音频管理」新建或选择练习组。可以按课程、日期、考试或主题分类；一个组最好只放同一类材料，之后整组生成字幕和连续播放才不会混在一起。</li>
+              <li><strong>导入音频并核对名称。</strong>点击「导入音频」选择 MP3、M4A、WAV 等文件。列表支持名称搜索和「全部／附字幕／待配字幕」筛选；双击音频名称可原位改名，按 Enter 保存，Esc 取消。</li>
+              <li><strong>配上对应字幕。</strong>选中音频，从「查看／管理字幕」进入学习页，导入 SRT／VTT，或按<a href="#subtitles">字幕章节</a>生成英文。导入后先试听开头和结尾，确认字幕确实属于这份音频。</li>
+              <li><strong>先听一遍，再决定怎么练。</strong>进入「音频学习」，先完整听一遍了解内容。之后按下面的方式调整倍速、循环和字幕显示，而不是一上来就逐句抠细节。</li>
             </ol>
-            <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 更快地导入和命名</h3><p>新建组会预填日期名称，音频名可双击原位编辑。主窗口右上角「悬浮窗」可打开或关闭快速导入窗口；它显示当前所选组，点击导入按钮执行你保存的命令，导入完成后可直接命名音频。</p></div>
-            <p>命令导入需先在设置中保存自己的命令。命令每行输出一个本机音频文件的<strong>完整路径</strong>，点击导入时才执行，结果归入点击时选中的组。桌面主版本与 RN 的平台支持不同，入口不存在时请看对应版本说明。</p>
-            <p>需要把文本变成练习材料时，使用「文字转音频」，先安装并选用 Kokoro 模型，再填写文本、生成并保存到所选组。首次模型下载需要联网；本机合成不等于已经生成字幕，仍可另行配字幕。</p>
+            <h3>精听：用不同粒度控制难度</h3>
+            <div class="guide-table-wrap"><table><caption>遇到不同的听力问题，换一种播放方式</caption><thead><tr><th scope="col">你现在的问题</th><th scope="col">建议操作</th><th scope="col">结果</th></tr></thead><tbody>
+              <tr><th scope="row">语速太快</th><td>打开底部倍速菜单，先从 0.75× 开始，听顺后再逐档回到原速。</td><td>降低语速不改变音高，适合先建立句子轮廓。</td></tr>
+              <tr><th scope="row">一句总听不全</th><td>点击该句字幕定位，再在播放模式菜单选择「单句循环」。</td><td>只重复当前句，听清后再手动换句。</td></tr>
+              <tr><th scope="row">需要自动推进</th><td>选择「每句三遍」。当前句播放三次后自动进入下一条有效字幕，最后一句完成后暂停。</td><td>不用反复点播放，适合通篇跟听。</td></tr>
+              <tr><th scope="row">只想练一个片段</th><td>在播放模式或设置中开启 A–B，标记起点和终点；B 必须晚于 A。</td><td>在范围内循环，进度条会显示范围和边界。</td></tr>
+              <tr><th scope="row">总想看字幕</th><td>在页面顶部切换到「盲听」，右键字幕行或点「查看」临时揭开。</td><td>先靠耳朵抓意思，核对后再继续播放。</td></tr>
+            </tbody></table></div>
+            <p>「跟随」开启时，当前播放句会自动滚到列表中间；想自己翻看时可以先关掉。点击字幕单词或句子仍用于定位播放；开启「截取片段」后，点击和 Shift 点击才改为设置片段边界。</p>
+            <h3>留下：从听到复习</h3>
+            <ol class="guide-steps">
+              <li><strong>截出一句真正有用的内容。</strong>开启「截取片段」，点击单词设置 A 点，Shift 点击扩展，再拖动波形边界微调。字幕里的 A/B 竖线也可以直接拖动，边界会随字符位置变化；确认后保存为闪卡，卡片会记住来源和时间范围。</li>
+              <li><strong>在字幕里找回已收藏的句子。</strong>已保存的片段会在字幕中显示绿色下划线。左键仍用于定位播放；右键下划线可以查看对应卡片，或取消收藏复习。取消只移除闪卡和复习记录，媒体与字幕仍在。</li>
+              <li><strong>第二天先听后看。</strong>到「闪卡复习」选择音频片段卡，先听再揭示文字。按真实掌握程度评分，下一次复习时间会跟着变化。</li>
+              <li><strong>把听过的句型再用出去。</strong>打开「句型搜索」，输入 <code>When</code>、<code>Why did</code> 等句首，从所有音频和已下载视频字幕里找原句。可以只试听某一条，也可以从第一条连续听下去。</li>
+            </ol>
+            <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 整组字幕与后台任务</h3><p>在音频管理或学习页的当前组标题下，可以「整组生成英文字幕」或「整组翻译中文字幕」。生成英文会跳过已有有效字幕；翻译只发送缺少中文的句子，没有英文的音频会先转写。单条失败会继续处理其他音频，取消后已完成的结果保留。</p><p>字幕任务在后台运行，期间可以切换音频、练习组或其他栏目。顶部任务卡会显示最初的音频或组名与进度，完成只保存对应材料，不会把你切回旧音频。重新生成会替换当前音频的旧字幕和时间轴，操作前先确认材料选对了。</p></div>
+            <h3>整理与批量导入</h3>
+            <p>「多选」可以全选当前筛选结果、移动到其他组、合并为学习版或移除记录。合并会按当前列表顺序衔接音频和双语字幕，原始记录与文件保留；学习页默认使用合并版，避免同一材料重复出现。</p>
+            <p>需要批量导入时，先用主窗口右上角「悬浮窗」确认当前练习组，再点击导入执行设置中保存的命令。命令每行输出一个本机音频文件的<strong>完整路径</strong>，导入固定到点击时的组；完成后可以直接在悬浮窗里逐条命名。选择口语分组时，返回的音频会在该组新建口语题目。</p>
+            <p>需要把文字变成听力材料时，使用「文字转音频 · Kokoro ONNX」：下载模型后填写文本、选择音色和语速，生成会保存为音频并带逐句时间轴。首次下载需要联网，生成和后续播放在本机完成；正文不会发送到远端。</p>
+            <p class="guide-note"><strong>常见误区：</strong>「逐句重复」只是按现有字幕起止时间重播，不会自动修正字幕。开头或结尾总被截断时，先试听原片确认，再保留旧字幕后重新生成当前音频的字幕。A–B 工具适合临时微调一个片段，不等于编辑整份字幕时间轴。</p>
           </section>
 
           <section class="guide-chapter" id="subtitles" data-guide-chapter data-keywords="SRT VTT TXT 字幕 英文 中文 翻译 生成 整组 跳过 时间轴 对齐" aria-labelledby="subtitles-title">
@@ -138,22 +159,46 @@ Small steps make a difference.</code></pre></div>
             <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 整组音频处理</h3><p>在「音频管理」选择目标组，点击整组生成英文或整组翻译中文。程序按组处理，跳过已有结果；部分中文缺失时按需补齐。发生错误会继续处理其他音频，并汇总失败项。取消后已经完成的结果会保留。</p><p>这与视频的「全部P翻译中文」规则不同：视频只要某个 P 任一句已有中文，就跳过<strong>整个 P</strong>，避免覆盖已有翻译。</p></div>
           </section>
 
-          <section class="guide-chapter" id="video" data-guide-chapter data-keywords="视频 B站 bilibili BV 分P 选集 无限 重复三次 三遍 字幕导航 文稿 倍速 0.7 0.9 进度" aria-labelledby="video-title">
+          <section class="guide-chapter" id="video" data-guide-chapter data-keywords="视频 B站 bilibili BV 分P 选集 无限 重复三次 三遍 三遍精听 字幕导航 文稿 倍速 0.7 0.9 进度 自动下一P 字号 跟随 收藏 导出SRT 全部P 整组合集" aria-labelledby="video-title">
             <p class="chapter-number">06 / VIDEO STUDY</p><h2 id="video-title">一句一句听懂视频</h2>
-            <ol class="guide-steps">
-              <li><strong>导入本地视频或 B 站来源。</strong>进入「视频学习」，从「更多」中打开本地视频或 bilibili 导入，填写 BV 号、av 号或完整链接。下载受网络及来源可用性影响。</li>
-              <li><strong>选择要学习的 P。</strong>多 P 视频在标题栏 P 数或右侧「选集」里切换，先准备对应媒体。不同 P 的字幕和时间轴分别保存，不要把同一篇文稿套到另一个 P。</li>
-              <li><strong>准备英文与中文。</strong>在右侧「字幕」导入英文字幕，或生成当前 P 的字幕；需要中文时再点「英文生成中文」。可先用「全部P生成字幕」准备英文。</li>
-              <li><strong>开启逐句重复。</strong>某句下方点「无限重复」或「重复三次」，也可从控制栏「本句重复」选择。三次模式会在本句播放三遍后自动进入下一条有效字幕，最后一句完成后暂停。</li>
-              <li><strong>结合文稿与提问。</strong>「英文文稿」查看整篇纯英文转录；需要理解句意时，用当前句、某条字幕或整段字幕作为 AI 引用，再输入具体问题。</li>
-            </ol>
-            <div class="guide-table-wrap"><table><caption>精听时常用的操作</caption><thead><tr><th scope="col">目标</th><th scope="col">操作与结果</th></tr></thead><tbody>
-              <tr><th scope="row">慢一点听</th><td>打开倍速菜单选择速度。<span class="guide-badge">新版功能</span> 新构建增加 0.7×、0.9× 等选择。</td></tr>
-              <tr><th scope="row">切换字幕句</th><td><span class="guide-badge">新版功能</span> 视频页按 ← / → 跳到上一句／下一句的开头；三次模式下切换到新句并从第一遍开始。早期版本普通左右键可能仍按秒跳转。</td></tr>
-              <tr><th scope="row">听自己选定的范围</th><td>从「设置」开启 A–B 精听工具，标记 A 起点和 B 终点，B 必须晚于 A。退出或清除范围后再恢复普通播放。</td></tr>
-              <tr><th scope="row">播放／暂停和全屏</th><td>单击视频画面播放／暂停，双击或 F11 切换全屏，Esc 退出；字幕和控制区共用当前播放状态。</td></tr>
+            <p class="chapter-intro">视频比音频多了来源、分 P 和画面，但精听方法相同：先把要学的这一集准备好，再让字幕带着你走。不要一边找资源一边学，先完成准备，再进入播放。</p>
+            <h3>准备：先选来源，再选这一集</h3>
+            <div class="guide-table-wrap"><table><caption>两种视频来源的差别</caption><thead><tr><th scope="col">来源</th><th scope="col">导入方式</th><th scope="col">需要注意</th></tr></thead><tbody>
+              <tr><th scope="row">本地视频</th><td>在「视频学习 → 我的视频」选择本机文件，可一次选择多个。</td><td>文件移动或删除后需要重新定位；本机 ZIP 备份会保留可用的原文件。</td></tr>
+              <tr><th scope="row">bilibili</th><td>在「更多」中填写 BV 号、av 号或完整链接；有 <code>?p=</code> 时直接导入指定集。</td><td>下载受网络和来源可用性影响。云备份只保存来源链接与字幕，恢复后需要重新下载原片。</td></tr>
             </tbody></table></div>
-            <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 批量翻译与返回续播</h3><p>「全部P翻译中文」读取已有英文缓存，任一句已有中文就跳过整个 P；缺英文的 P 会列出失败原因，不会为了翻译自动下载和重新转写。先生成英文，再重试未完成部分。</p><p>切到其他栏目时保存并暂停视频，返回后停在离开的位置，点击播放继续。手动跳转或离开视频模块会结束旧的逐句重复模式。</p></div>
+            <ol class="guide-steps">
+              <li><strong>把视频收藏起来。</strong>导入后会进入「我的视频」，显示来源、总 P 数和已下载数量。重复导入同一文件会去重，同名但路径不同的文件会分别保留。</li>
+              <li><strong>选对 P 再准备媒体。</strong>多 P 视频在标题栏 P 数或右侧「选集」切换。每个 P 的字幕和时间轴分别保存，不要把同一篇文稿套到另一个 P。</li>
+              <li><strong>需要连续看时打开自动下一 P。</strong>当前集真正播放结束后，已下载的下一集会直接播放，未下载的会先下载；最后一集播完停止。单集循环或 A–B 循环优先，此时不会自动换集。</li>
+            </ol>
+            <h3>字幕：先有英文，再补中文</h3>
+            <div class="guide-table-wrap"><table><caption>按范围选择处理方式</caption><thead><tr><th scope="col">范围</th><th scope="col">操作</th><th scope="col">行为</th></tr></thead><tbody>
+              <tr><th scope="row">当前 P</th><td>字幕区「生成字幕／重新生成」，或从「更多 → 导入英文字幕」加载 SRT／VTT。</td><td>重新生成会替换当前 P 的旧字幕与时间轴。</td></tr>
+              <tr><th scope="row">当前 P 的中文</th><td>点「翻译中文」。</td><td>保留英文和时间轴，只补缺失中文；已有中文不会重复发送。</td></tr>
+              <tr><th scope="row">整个选集</th><td>「选集」或字幕「更多」里的「生成英文字幕」。</td><td>按顺序处理所有 P；已有有效字幕跳过，未下载的先下载再转写。</td></tr>
+              <tr><th scope="row">全部 P 的中文</th><td>「全部P翻译中文」。</td><td>只要某个 P 已有一句中文，就跳过整个 P；缺英文的 P 会列出原因，不会为翻译自动下载或转写。</td></tr>
+            </tbody></table></div>
+            <p>字幕任务会显示提取音轨、语音识别、保存字幕等实际阶段；取消后已保存的结果保留。整个选集的生成任务在后台执行，期间可以切到其他 P 或其他收藏，任务卡会显示处理到哪一集。</p>
+            <h3>精听：把播放器当作句子工具</h3>
+            <div class="guide-table-wrap"><table><caption>视频页最常用的精听操作</caption><thead><tr><th scope="col">目标</th><th scope="col">操作与结果</th></tr></thead><tbody>
+              <tr><th scope="row">反复听一句</th><td>点字幕行或控制栏进入「单句循环」。播放器只重复当前句，手动换句或停止后退出。</td></tr>
+              <tr><th scope="row">每句自动三遍</th><td>选择「每句三遍」。当前句播放三次后自动进入下一条有效字幕；句间空白会跳到下一句，最后一句完成后暂停，不自动换集。</td></tr>
+              <tr><th scope="row">练一个范围</th><td>从控制栏「设置」开启 A–B，标记起点和终点。范围内循环时，单集循环和自动下一 P 不会抢先执行。</td></tr>
+              <tr><th scope="row">切换字幕句</th><td>按 ← / → 或控制栏「上一句／下一句」，从目标句句首开始；暂停时切句仍保持暂停。</td></tr>
+              <tr><th scope="row">看清字幕</th><td>控制栏「设置」调整 14–32px 字号，普通与全屏共用并自动保存。开启「跟随」会把当前句滚到可视区域中间。</td></tr>
+              <tr><th scope="row">播放与全屏</th><td>单击画面播放／暂停；双击画面、F11 或控制栏「全屏」进入原生全屏，Esc 退出，播放状态保持。</td></tr>
+            </tbody></table></div>
+            <p>三遍模式进行中会显示当前是第几遍；等待字幕或本句完成时也会显示对应状态。点击音轨会在当前重复句内定位，超出范围时停靠到最近边界，不会悄悄切换句子。要换句，用左右键或直接点击目标字幕。</p>
+            <h3>输出：文稿、复制和提问</h3>
+            <ol class="guide-steps">
+              <li><strong>用英文文稿通读。</strong>右侧「英文文稿」显示当前视频或当前 P 的纯英文转录，带句数和约词数，可独立滚动。</li>
+              <li><strong>只复制需要的内容。</strong>每句右侧「复制」复制完整正文；「更多 → 复制双语字幕」按顺序复制全部文字，不含时间戳；「复制英文全文」只复制英文，不含中文。</li>
+              <li><strong>带着引用提问。</strong>点「问当前句」「问整段字幕」或某条字幕的「问 AI」，引用会先放进右侧学习助手。确认原文后再输入问题，切换视频不会替换已添加的引用。</li>
+              <li><strong>导出字幕留档。</strong>「更多 → 导出 SRT」保存完整字幕文件；这条路径不改变播放状态，也不会重新转写。</li>
+            </ol>
+            <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 离开再回来，继续原来的位置</h3><p>切到其他栏目时视频会暂停并保存最新进度。返回「视频学习」后停在离开的位置，点击播放继续；从音频或复习模块打开同一视频的片段，返回时仍恢复完整视频的学习位置。手动跳转、换视频或离开模块会结束旧的逐句重复模式。</p><p>视频页收起学习助手、关闭菜单或点击播放控件后，键盘会交回视频：左右键切句、空格播放／暂停。正在编辑问题或使用输入法时，按键仍用于输入。</p></div>
+            <p class="guide-note"><strong>导入失败先查来源，不要先怪字幕：</strong>确认链接正确、网络能访问来源、该 P 仍可观看。已恢复的来源记录只表示收藏还在，不代表视频文件已经下载。缺媒体时先按提示准备对应 P，不要用另一 P 的字幕掩盖问题。</p>
           </section>
 
           <section class="guide-chapter" id="cards" data-guide-chapter data-keywords="闪卡 复习 Anki apkg 词卡 收藏 片段 A/B 下划线 右键 新卡 计划" aria-labelledby="cards-title">
@@ -171,15 +216,37 @@ review - 复习</code></pre></div>
             <p class="guide-note"><span class="guide-badge">新版功能</span> 已收藏的片段会在字幕中以下划线标出。左键仍用于定位或选段，<strong>右键</strong>已收藏部分打开取消收藏复习入口；取消会移出对应闪卡复习，保留媒体和字幕。AI 重点下划线与片段收藏是不同标记。</p>
           </section>
 
-          <section class="guide-chapter" id="writing" data-guide-chapter data-keywords="写作 题目 作答 作文 批改 草稿 编辑器 保存 历史" aria-labelledby="writing-title">
-            <p class="chapter-number">08 / WRITING</p><h2 id="writing-title">保存题目，写下自己的回答</h2>
+          <section class="guide-chapter" id="writing" data-guide-chapter data-keywords="写作 题目 作答 作文 批改 草稿 编辑器 保存 历史 分组 标签 词数 目标词数 逐处修改 综合批改 快照 追问 移动分组 格式 粘贴" aria-labelledby="writing-title">
+            <p class="chapter-number">08 / WRITING</p><h2 id="writing-title">从题目到修改，完成一篇</h2>
+            <p class="chapter-intro">写作不是「写完等分数」，而是一个可以重复的闭环：读清题目、写下初稿、拿到具体意见、改出下一版。Clarora 把每一版都留在本机，方便你对照自己的变化。</p>
+            <h3>建立自己的写作库</h3>
             <ol class="guide-steps">
-              <li><strong>新建一篇写作。</strong>进入「写作练习」，新建草稿。标题可选，建议写上考试、主题或日期，方便后续查找。</li>
-              <li><strong>把要求写完整。</strong>在「写作题目」编辑器里放入题目、任务要求或评分标准；在「我的作答」里输入正文。支持中英文和多行文本。</li>
-              <li><strong>保存并提交批改。</strong>输入会自动保存，也可点击「保存写作」。确认题目和作答后点击「AI 批改」，本次题目与作答会一起发送至设置中的模型服务。</li>
-              <li><strong>结合反馈修改。</strong>检查切题程度、结构、语法和用词建议；修改自己的原稿，再按需要发起下一次批改。批改记录保存本次提交的快照，不会替你覆盖原稿。</li>
+              <li><strong>先建组，再新建写作。</strong>进入「写作练习」，在「我的写作」切换分组或新建组。新组默认使用当天日期，也可以改成考试、话题或课程名称；选定分组后新建的写作会归入该组。</li>
+              <li><strong>给每篇一个能找回的标题。</strong>标题可选，但建议写上考试、主题或日期。已保存的写作可以在编辑区「移动分组」，不必删除重写。</li>
+              <li><strong>用标签做跨组筛选。</strong>在「题目标签」输入名称，按 Enter 或点「添加标签」；点标签上的「×」移除。标签只用于分类，随草稿自动保存并纳入备份。</li>
             </ol>
-            <p class="guide-result"><strong>建议这样提要求：</strong>在题目中写清字数、体裁和希望重点检查的方面。未提供评分标准时，模型反馈不应被当成正式考试评分。</p>
+            <h3>把题目和自己的作答分开</h3>
+            <ol class="guide-steps">
+              <li><strong>完整粘贴题目。</strong>在「写作题目」放入题目、任务要求和评分标准。从网页复制带格式的内容时，会保留标题、段落、列表、换行、粗体和斜体，并显示格式预览；点「编辑题目」可以改 Markdown 正文，再点「预览格式」核对。</li>
+              <li><strong>设定本次字数目标。</strong>可以在草稿标题旁填写目标词数，留空表示不设目标。字数统计会显示当前进度和还差多少词，写作时不用自己反复数。</li>
+              <li><strong>在「我的作答」里写初稿。</strong>题目和作答是两个独立编辑器，正文 24px，支持回车换段、自动折行和内部滚动；窄窗口自动上下排列。停止输入后自动保存，也可以手动点「保存写作」。</li>
+              <li><strong>切换前不用怕丢。</strong>切换篇目、分组或模块前会保存当前草稿，重启后继续编辑。空白新稿不占用列表；保存失败时保留编辑内容并显示错误，不会悄悄清空。</li>
+            </ol>
+            <h3>选择适合这一稿的批改方式</h3>
+            <div class="guide-table-wrap"><table><caption>两种批改不是二选一，可以先用一种再用另一种</caption><thead><tr><th scope="col">方式</th><th scope="col">适合什么时候用</th><th scope="col">你会看到什么</th></tr></thead><tbody>
+              <tr><th scope="row">综合批改</th><td>刚写完初稿，想知道整体是否切题、结构是否站得住。</td><td>切题、结构、语法用词、修改建议和参考润色稿。设置目标词数时，不足会先说明差多少，并指出可在哪些段落补原因、例子、细节、对比或结果。</td></tr>
+              <tr><th scope="row">逐处修改</th><td>整体方向已经确定，想逐句看哪里可以改得更准确。</td><td>在提交原文中用删除线和下划线标出变化，批注按编号查看，另有完整建议稿预览。</td></tr>
+            </tbody></table></div>
+            <p>提交前会先保存草稿，再把当次题目和作答一起发送到设置中的聊天模型。批改可以取消，切到其他模块后也会继续；失败、截断或取消不会新增一条成功批改。</p>
+            <h3>把反馈变成下一版</h3>
+            <ol class="guide-steps">
+              <li><strong>先判断，再改。</strong>对照题目检查是否回答了任务，再处理结构和句子。不要直接把参考润色稿当成自己的最终稿；先用自己的话重写，再比较差别。</li>
+              <li><strong>在「原稿」里继续修改。</strong>每次成功批改都会单独保留，并保存当次题目和作答的快照。点「查看批改结果」打开历史意见，展开「查看本次提交原文」可以核对当时到底交了什么。</li>
+              <li><strong>带着上下文追问。</strong>在任一批改结果里点「追问 AI」，助手会预览这次提交的题目、作答和批改意见；设置过目标词数时，还会带上目标、实际词数和差额。确认引用后再问「这一段为什么不够具体」之类的问题。</li>
+              <li><strong>隔一段时间重写一次。</strong>同一道题可以新建另一篇写作，不看旧稿先写，再对照两次的批改记录。提升往往来自第二次独立作答，而不是只把旧稿改到满分。</li>
+            </ol>
+            <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 边看意见边改原文</h3><p>宽窗口中可以把作答草稿与批改历史左右并排，长批改独立滚动；全屏等宽窗口会给草稿更多宽度并同步加高编辑框，窄窗口改为上下排列。批改中的 Markdown 表格会按可用宽度换行，不再被横向截断。</p><p>删除写作需要再次确认，并会一并删除它的批改历史。删除前确认这篇已经导出备份，或确实不再需要。</p></div>
+            <p class="guide-note"><strong>关于评分与隐私：</strong>除非你在题目中提供了明确的评分标准，AI 反馈不应被当成正式考试分数。提交批改会把题目和作答发送到你配置的模型服务；写作草稿与批改历史会进入本机 ZIP／云备份，但 AI 密钥不包含在备份里。题目和作答分别有长度上限，超出时界面会提示，不会悄悄截断正文。</p>
           </section>
 
           <section class="guide-chapter" id="reading" data-guide-chapter data-keywords="阅读 文档 书库 PDF EPUB TXT 电子书 目录 页码 进度 书籍" aria-labelledby="reading-title">
@@ -193,16 +260,40 @@ review - 复习</code></pre></div>
             <p class="guide-note">EPUB 与 PDF 的分页方式不同，页码可能不对应纸质书。带加密保护或其他格式的书籍不能保证直接打开；遇到格式错误，先确认文件完整且属于支持的类型。</p>
           </section>
 
-          <section class="guide-chapter" id="speaking" data-guide-chapter data-keywords="跟读 口语 录音 麦克风 评分 OCR 拍照 图片 识字" aria-labelledby="speaking-title">
-            <p class="chapter-number">10 / PRACTICE</p><h2 id="speaking-title">跟读一句，也读懂一页</h2>
-            <h3>口语跟读</h3>
+          <section class="guide-chapter" id="speaking" data-guide-chapter data-keywords="跟读 口语 口语练习 题库 分组 标签 题目 录音 麦克风 评分 草稿 目标词数 生成读音 Kokoro 整组批改 对照 漏读 语速 OCR 拍照 图片 识字" aria-labelledby="speaking-title">
+            <p class="chapter-number">10 / SPEAKING</p><h2 id="speaking-title">用题库把口语练成日常</h2>
+            <p class="chapter-intro">口语练习不只是按下录音键。先有一道值得回答的题，再准备参考表达、写下自己的答案，最后录下来对照。Clarora 把题库、草稿和跟读记录放在同一页，方便你反复练同一道题。</p>
+            <h3>建立口语题库</h3>
             <ol class="guide-steps">
-              <li><strong>准备参考句。</strong>在口语跟读中填写参考文本，或从当前学习材料开始跟读。先听懂句意，再录下自己的朗读。</li>
-              <li><strong>允许麦克风并完成录音。</strong>点击录音，按系统提示授予权限，读完后停止；无音频时先检查系统输入设备及应用麦克风权限。</li>
-              <li><strong>转写并查看对照。</strong>使用保存的转写设置识别录音，再查看文本对齐与反馈。该分数主要反映转写文本与参考句的匹配，不能等同于完整的发音或音素评估。</li>
+              <li><strong>按场景建组。</strong>进入「口语练习」，在页面顶部的题库卡片新建或选择分组。可以按考试、话题或课程分类；分组可以添加标签，点标签旁的「×」移除，标签随分组备份。</li>
+              <li><strong>每道题以音频为来源。</strong>新建题目时选择一段音频。题目卡片会显示波形、播放时间和倍速；点击波形可定位，暂停后能从当前位置继续。移除音频后仍可查看已保存的文字，也可以重新添加音频。</li>
+              <li><strong>批量准备题目。</strong>「命令批量导入」会在当前组为每个音频新建一道题，「命令导入本题」用于单条补充。两者共用「设置 → 悬浮窗与命令导入」里的本机命令，不依赖 AI 配置。</li>
+              <li><strong>先把题目听懂。</strong>点「音频转文字」生成原文，「翻译成中文」补译文；两者都会自动保存。已转写的音频还能用「AI 生成标签」归纳主题，未转写的会跳过。</li>
             </ol>
-            <h3>拍照识字</h3>
-            <p>进入「拍照识字」，选择需要识别的图片；支持拍照的设备可从相应入口拍摄。先配置可用的视觉模型，识别结果可以复制或交给学习助手继续提问。远端视觉识别会发送图片，不属于本地字幕模型的离线能力。</p>
+            <h3>准备参考表达，而不是背标准答案</h3>
+            <ol class="guide-steps">
+              <li><strong>写自己的作答草稿。</strong>每道题都有独立草稿。可以直接编辑、粘贴，或导入 UTF-8 的 <code>.txt</code>／<code>.md</code> 文件；导入会追加到已有草稿末尾。</li>
+              <li><strong>设置目标词数。</strong>在草稿标题旁填写目标词数，留空表示不设目标。字数统计会显示当前进度和还差多少词，停止输入后自动保存。</li>
+              <li><strong>先听一遍再开口。</strong>点「生成读音」用本机 Kokoro 把草稿读出来，再点一次可暂停或继续。它使用音频页选择的音色和语速，需先下载模型；生成结果按草稿和音色缓存，正文不发送到远端。</li>
+              <li><strong>整组一起批改。</strong>当前组至少有 2 道题写了草稿时，点「整组批改」，会把题目和作答一起加入学习助手引用，并预填检查前后答案重复的要求。单题也可以点「AI 批改」，选择综合批改或逐处修改。</li>
+            </ol>
+            <h3>录音跟读与复盘</h3>
+            <ol class="guide-steps">
+              <li><strong>先听参考，再录自己。</strong>播放题目音频或生成的读音，跟读几遍后再使用下方独立的录音入口。第一次录音前按系统提示授予麦克风权限。</li>
+              <li><strong>转写并对照。</strong>停止录音后使用已保存的转写设置识别，查看参考文本和识别文本的差异。</li>
+              <li><strong>按维度改，而不是只盯总分。</strong>对齐结果会指出漏读、读错、多读、完整度和语速。先处理漏掉或读错的词，再调整停顿和速度；重录同一句，比较这次的变化。</li>
+              <li><strong>把好用的表达留下来。</strong>把值得复用的句子保存为闪卡，或把音频片段加入复习。第二天先听再复述，比只看文字更接近真实开口。</li>
+            </ol>
+            <div class="guide-table-wrap"><table><caption>每天 10 分钟的口语流程</caption><thead><tr><th scope="col">时间</th><th scope="col">做什么</th><th scope="col">判断标准</th></tr></thead><tbody>
+              <tr><th scope="row">2 分钟</th><td>听题目音频，确认这道题在问什么，必要时看译文。</td><td>能用自己的话复述题目要求。</td></tr>
+              <tr><th scope="row">3 分钟</th><td>看草稿或关键词，开口说两遍，不追求一次完美。</td><td>能连续说完，不长时间卡住。</td></tr>
+              <tr><th scope="row">3 分钟</th><td>录音并转写，对照漏读、读错、多读和语速。</td><td>找出一个最影响理解的问题。</td></tr>
+              <tr><th scope="row">2 分钟</th><td>只重录那一句或那一段，再听一遍。</td><td>这次比上一次更清楚，而不是更快。</td></tr>
+            </tbody></table></div>
+            <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 题库与题目的完整备份</h3><p>口语分组、题目、题目音频、作答草稿、目标词数和批改历史都会纳入资料备份；原始跟读录音不包含在备份里。换设备前先导出本机 ZIP 或完成云备份，恢复后核对题目音频是否可读。</p></div>
+            <p class="guide-note"><strong>分数说明：</strong>口语分数表示识别文本与参考句的对齐程度，包含漏读、读错、多读、完整度和语速，并不是声学发音或音素评测。录音依赖麦克风权限和系统输入设备；没有声音时先检查这两项，再重录。AI 批改和翻译会把对应文字发送到你配置的模型服务。</p>
+            <h3>顺带：拍照识字</h3>
+            <p>进入「拍照识字」，选择需要识别的图片；支持拍照的设备可从相应入口拍摄。先配置可用的视觉模型，识别结果可以复制，或交给学习助手继续提问。远端视觉识别会发送图片，不属于本地字幕模型的离线能力；扫描型 PDF 的页面识字也走同一条视觉模型路径。</p>
           </section>
 
           <section class="guide-chapter" id="focus" data-guide-chapter data-keywords="专注 番茄钟 冥想 计时 提示音 暂停 退出 重启 恢复" aria-labelledby="focus-title">

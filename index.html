@@ -417,69 +417,60 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">YOUR DAILY WORKFLOW</p>
-            <h2 id="tutorial-title">先从五个常用操作开始。</h2>
+            <h2 id="tutorial-title">先从四个核心练习开始。</h2>
           </div>
           <p>
-            先完成一次小练习，再按模块深入。<br />本地处理与远端 AI 的区别，手册里逐步说明。
+            音频、视频、写作、口语，各自一条最短路径。<br />先完成一个，再按手册深入。
           </p>
         </div>
-        <div class="tutorial-tabs" role="tablist" aria-label="使用教学">
-          <button role="tab" id="tut-tab-import" aria-selected="true" aria-controls="tut-panel-import" data-tutorial="import">
-            导入内容</button
-          ><button role="tab" id="tut-tab-subtitles" aria-selected="false" aria-controls="tut-panel-subtitles" tabindex="-1" data-tutorial="subtitles">
-            字幕与翻译</button
-          ><button role="tab" id="tut-tab-ai" aria-selected="false" aria-controls="tut-panel-ai" tabindex="-1" data-tutorial="ai">
-            AI 学习</button
+        <div class="tutorial-tabs" role="tablist" aria-label="核心练习教学">
+          <button role="tab" id="tut-tab-audio" aria-selected="true" aria-controls="tut-panel-audio" data-tutorial="audio">
+            音频精听</button
+          ><button role="tab" id="tut-tab-video" aria-selected="false" aria-controls="tut-panel-video" tabindex="-1" data-tutorial="video">
+            视频精听</button
+          ><button role="tab" id="tut-tab-writing" aria-selected="false" aria-controls="tut-panel-writing" tabindex="-1" data-tutorial="writing">
+            写作批改</button
           ><button role="tab" id="tut-tab-speaking" aria-selected="false" aria-controls="tut-panel-speaking" tabindex="-1" data-tutorial="speaking">
-            跟读练习</button
-          ><button role="tab" id="tut-tab-backup" aria-selected="false" aria-controls="tut-panel-backup" tabindex="-1" data-tutorial="backup">
-            备份与同步
+            口语跟读
           </button>
         </div>
-        <div class="tutorial-panel" id="tut-panel-import" role="tabpanel" aria-labelledby="tut-tab-import">
+        <div class="tutorial-panel" id="tut-panel-audio" role="tabpanel" aria-labelledby="tut-tab-audio">
           <ol class="tutorial-steps">
-            <li><strong>准备客户端：</strong>从下载区选择自己的设备，安装后打开桌面主版本。旧包与 RN 的功能入口可能不同。</li>
-            <li><strong>整理一段音频：</strong>进入「音频管理」，新建或选择练习组，再导入 MP3 / M4A / WAV 等文件。</li>
-            <li><strong>配上字幕：</strong>给所选音频导入对应的 SRT / VTT；没有字幕时可按设置选择本地或远端转写。</li>
-            <li><strong>开始精听：</strong>进入「音频学习」，点击字幕定位、调整倍速，选一小段保存为闪卡，之后到复习页再听。</li>
-          </ol><p class="build-note"><a href="./guide.html#quick-start">查看第一次精听的完整步骤 ↗</a></p>
+            <li><strong>建组并导入：</strong>在「音频管理」新建练习组，导入 MP3 / M4A / WAV，双击音频名可直接改名。</li>
+            <li><strong>让字幕对上：</strong>导入对应的 SRT / VTT，或按设置生成英文；先试听开头和结尾，确认字幕属于这份音频。</li>
+            <li><strong>换粒度精听：</strong>整段听大意，难句用「单句循环」，通篇跟听用「每句三遍」；需要时开 A–B 只练一个片段。</li>
+            <li><strong>留下再复习：</strong>截取一句保存为闪卡，第二天在「闪卡复习」先听后看；想找同类句型就去「句型搜索」。</li>
+          </ol><p class="build-note"><a href="./guide.html#audio">音频精听的完整流程 ↗</a> · <a href="./guide.html#cards">片段闪卡与复习 ↗</a></p>
         </div>
-        <div class="tutorial-panel" id="tut-panel-subtitles" role="tabpanel" aria-labelledby="tut-tab-subtitles" hidden>
+        <div class="tutorial-panel" id="tut-panel-video" role="tabpanel" aria-labelledby="tut-tab-video" hidden>
           <ol class="tutorial-steps">
-            <li><strong>先选转写方式：</strong>本地模型下载后要选用并保存；远端转写需要可用的音频接口。本地转写不等于中文翻译也能离线。</li>
-            <li><strong>生成英文：</strong>选择音频并点「生成字幕」，完成后试听开头与结尾，检查时间轴是否匹配。</li>
-            <li><strong>添加中文：</strong>保存聊天 API 设置后点「翻译成中文」，保留英文和时间轴。新版桌面构建也支持整组音频处理。</li>
-            <li><strong>视频逐句听：</strong>选择 P 并准备字幕，可无限重复本句，或每句播放三遍后自动进入下一句。</li>
-          </ol><p class="build-note"><a href="./guide.html#subtitles">字幕示例与批量规则 ↗</a> · <a href="./guide.html#video">视频精听步骤 ↗</a></p>
+            <li><strong>先准备这一集：</strong>导入本地视频或 bilibili 链接，多 P 视频在「选集」里选对 P，不要跨 P 套用同一份字幕。</li>
+            <li><strong>先英文后中文：</strong>导入或生成当前 P 的字幕，再点「翻译中文」；整季学习可用「全部P」批量处理。</li>
+            <li><strong>按句精听：</strong>「单句循环」反复听一句，「每句三遍」自动推进；← / → 切句，A–B 练一个范围。</li>
+            <li><strong>带着文稿输出：</strong>用「英文文稿」通读，复制单句、双语或英文全文，或引用字幕向学习助手提问。</li>
+          </ol><p class="build-note"><a href="./guide.html#video">视频逐句精听步骤 ↗</a> · <a href="./guide.html#subtitles">字幕生成与批量规则 ↗</a></p>
         </div>
-        <div class="tutorial-panel" id="tut-panel-ai" role="tabpanel" aria-labelledby="tut-tab-ai" hidden>
+        <div class="tutorial-panel" id="tut-panel-writing" role="tabpanel" aria-labelledby="tut-tab-writing" hidden>
           <ol class="tutorial-steps">
-            <li><strong>填写 AI 设置：</strong>输入模型服务提供的 Base URL、API Key 和模型 ID，点击保存，再用简短问答验证。</li>
-            <li><strong>确认引用再提问：</strong>打开「学习助手」，先看当前材料是否正确，再针对字幕、书籍或图片提问。</li>
-            <li><strong>按任务准备能力：</strong>中文翻译和写作批改使用聊天服务，图片识字需要视觉模型；这些远端请求会发送对应材料。</li>
-            <li><strong>保留学习结果：</strong>有用的回答可存为问答卡；写作页可将题目和作答一起提交，保留批改记录。</li>
-          </ol><p class="build-note"><a href="./guide.html#ai-setup">首次配置与模型选择 ↗</a> · <a href="./guide.html#writing">写作使用步骤 ↗</a></p>
+            <li><strong>建组再新建：</strong>在「写作练习」按考试或话题分组，给每篇写作一个能找回的标题，需要时加标签。</li>
+            <li><strong>题目和作答分开：</strong>完整粘贴题目与评分标准，带格式的内容会保留样式；写下初稿并设置目标词数。</li>
+            <li><strong>选一种批改：</strong>初稿用「综合批改」看切题与结构，定稿前用「逐处修改」看具体改法。</li>
+            <li><strong>改出下一版：</strong>对照历史意见修改原稿，每次提交都保留快照；有疑问就点「追问 AI」带着上下文继续问。</li>
+          </ol><p class="build-note"><a href="./guide.html#writing">写作批改的完整闭环 ↗</a> · <a href="./guide.html#ai-setup">配置批改用的聊天模型 ↗</a></p>
         </div>
         <div class="tutorial-panel" id="tut-panel-speaking" role="tabpanel" aria-labelledby="tut-tab-speaking" hidden>
           <ol class="tutorial-steps">
-            <li><strong>准备参考文本：</strong>进入口语跟读，填写要练习的句子，或从学习材料开始。</li>
-            <li><strong>录下自己的声音：</strong>允许麦克风访问，读完后停止，再使用已保存的转写设置识别录音。</li>
-            <li><strong>查看文本对照：</strong>检查漏词和不同表达，再听、再练。文本匹配分数不能等同于完整的发音评估。</li>
-          </ol><p class="build-note"><a href="./guide.html#speaking">录音、评分与图片识字说明 ↗</a></p>
-        </div>
-        <div class="tutorial-panel" id="tut-panel-backup" role="tabpanel" aria-labelledby="tut-tab-backup" hidden>
-          <ol class="tutorial-steps">
-            <li><strong>先导出本机备份：</strong>在设置中导出含附件的资料 ZIP；升级或换设备前保留一份。</li>
-            <li><strong>需要云端时再配置：</strong>填写自己的 S3 / OSS 存储位置并保存，再手动上传一个版本。</li>
-            <li><strong>换机读取并合并：</strong>另一端使用相同存储位置与前缀，读取版本后合并到本机，核对资料和附件。</li>
-            <li><strong>分开配置密钥：</strong>应用备份不包含 API / 存储密钥。备份不是自动实时双向同步，也不自动传播删除。</li>
-          </ol><p class="build-note"><a href="./guide.html#backup">本机备份、云备份与 RN 迁移 ↗</a></p>
+            <li><strong>建口语题库：</strong>在「口语练习」新建分组，每道题以音频为来源；可转写题目并生成中文。</li>
+            <li><strong>准备自己的答案：</strong>写作答草稿、设置目标词数，需要时用本机 Kokoro 生成读音先听一遍。</li>
+            <li><strong>录下来对照：</strong>播放参考后录音，转写识别，查看漏读、读错、多读、完整度和语速。</li>
+            <li><strong>只改一个重点：</strong>重录最影响理解的一句；整组题可一起批改，检查前后答案是否重复。</li>
+          </ol><p class="build-note"><a href="./guide.html#speaking">口语题库与跟读说明 ↗</a> · <a href="./guide.html#ai-setup">语音与批改需要的模型配置 ↗</a></p>
         </div>
         <div class="manual-promo">
-          <div><h3>完整使用手册</h3><p>13 个主题，覆盖安装、模型配置、音视频、写作、电子书、专注与换机。可搜索操作名称，逐步完成，也可以直接查常见问题。</p></div>
+          <div><h3>完整使用手册</h3><p>13 个主题，重点展开音频精听、视频逐句、写作批改和口语题库，也覆盖安装、模型配置、电子书、专注与换机。</p></div>
           <a class="button primary" href="./guide.html" data-guide-entry>打开完整手册 <span aria-hidden="true">↗</span></a>
         </div>
-        <p class="build-note">以下以桌面主版本为主，RN 的平台差异见 <a id="tutorial-platform-docs" class="repo-docs-link" href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md" target="_blank" rel="noopener noreferrer">平台说明 ↗</a>。手册中的近期新增操作已单独标记。</p>
+        <p class="build-note">字幕与 AI 设置见手册第 03、05 章，备份与换机见第 12 章。以下以桌面主版本为主，RN 的平台差异见 <a id="tutorial-platform-docs" class="repo-docs-link" href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md" target="_blank" rel="noopener noreferrer">平台说明 ↗</a>。手册中的近期新增操作已单独标记。</p>
       </section>
 
       <section
