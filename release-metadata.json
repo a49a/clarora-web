@@ -1,24 +1,24 @@
 {
-  "version": "0.2.2",
-  "tag": "v0.2.2",
-  "source_sha": "65a620e857f858b0bd0f823141c64560373ffd5d",
+  "version": "0.3.0",
+  "tag": "v0.3.0",
+  "source_sha": "0d4fb65f742a61079712139b025e707ff15674b7",
   "repository": "https://github.com/a49a/clarora",
-  "assets_base": "https://github.com/a49a/clarora/releases/download/v0.2.2",
-  "latest_url": "https://github.com/a49a/clarora/releases/tag/v0.2.2",
+  "assets_base": "https://github.com/a49a/clarora/releases/download/v0.3.0",
+  "latest_url": "https://github.com/a49a/clarora/releases/tag/v0.3.0",
   "platforms": {
     "macos": {
       "arch": "arm64",
       "asset_name": "Clarora-macos-arm64.dmg",
       "status": "released",
       "requirements": "macOS 14+,Apple Silicon",
-      "url": "https://github.com/a49a/clarora/releases/download/v0.2.2/Clarora-macos-arm64.dmg"
+      "url": "https://github.com/a49a/clarora/releases/download/v0.3.0/Clarora-macos-arm64.dmg"
     },
     "windows": {
       "arch": "x64",
       "asset_name": "Clarora-windows-x64.zip",
       "status": "released",
       "requirements": "Windows 10 1809+,安装器或便携 ZIP",
-      "url": "https://github.com/a49a/clarora/releases/download/v0.2.2/Clarora-windows-x64.zip"
+      "url": "https://github.com/a49a/clarora/releases/download/v0.3.0/Clarora-windows-x64.zip"
     },
     "android": {
       "asset_name": "Clarora-android.apk",
