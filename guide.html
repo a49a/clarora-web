@@ -296,14 +296,32 @@ review - 复习</code></pre></div>
             <p>进入「拍照识字」，选择需要识别的图片；支持拍照的设备可从相应入口拍摄。先配置可用的视觉模型，识别结果可以复制，或交给学习助手继续提问。远端视觉识别会发送图片，不属于本地字幕模型的离线能力；扫描型 PDF 的页面识字也走同一条视觉模型路径。</p>
           </section>
 
-          <section class="guide-chapter" id="focus" data-guide-chapter data-keywords="专注 番茄钟 冥想 计时 提示音 暂停 退出 重启 恢复" aria-labelledby="focus-title">
+          <section class="guide-chapter" id="focus" data-guide-chapter data-keywords="专注 专注模式 番茄钟 冥想 计时 提示音 暂停 退出 重启 恢复 最低目标 分心 疲劳 训练建议 电脑专注 全屏 Dock 菜单栏 紧急结束 Ctrl Shift Esc" aria-labelledby="focus-title">
             <p class="chapter-number">11 / FOCUS</p><h2 id="focus-title">让一次练习有开始和结束</h2>
+            <p class="chapter-intro">专注不是把计时器打开就结束。先定一个够得着的最低目标，练习中记录分心，结束后再决定下一轮要不要加长。需要更强的约束时，macOS 还可以开启电脑专注。</p>
+            <h3>普通专注计时</h3>
             <ol class="guide-steps">
-              <li><strong>选择时长并开始。</strong>使用全局「专注时间」条的「专注时长」选项，或进入「冥想专注」。同一轮计时在模块间共用。</li>
-              <li><strong>按需要暂停或继续。</strong>切换学习栏目不必重新开一轮；临时离开可暂停。重置会改变当前轮次，不是普通继续。</li>
-              <li><strong>注意阶段变化。</strong>专注完成后进入休息，再按当前设置继续。若没有提示音，检查应用音量、系统输出设备和版本是否包含相应提示音实现。</li>
+              <li><strong>选一个最低目标。</strong>使用全局「专注时间」条的「专注时长」选项，或进入「冥想专注」。目标支持 5 至 60 分钟，每 5 分钟一档；同一轮计时在音频、视频、写作等模块间共用。</li>
+              <li><strong>开始后不用一直盯着计时器。</strong>需要临时离开时可以暂停；回来后继续，已专注时间不会因为切换学习栏目而重新开始。</li>
+              <li><strong>分心时记一笔。</strong>点击「分心 +1」记录一次。电脑专注因切出应用而中断时也会自动记一次，方便结束后回看这一轮的状态。</li>
+              <li><strong>达标后自己决定是否继续。</strong>达到最低目标会提醒一次，计时继续。准备好时点「结束本轮」，保存实际时长、目标、分心次数和达标统计，再进入 5 分钟休息；休息结束后等待你手动开始下一轮。</li>
             </ol>
-            <p class="guide-note"><span class="guide-badge">新版功能</span> 新构建会保存运行中的截止时间或暂停剩余时间，退出后重开按实际经过时间恢复。关闭期间已经到期时只结算上一轮，并停在下一阶段等待继续，不自动累计离线多轮。早期没有保存的计时无法事后找回。</p>
+            <h3>电脑专注（macOS）</h3>
+            <ol class="guide-steps">
+              <li><strong>从标题栏右侧的专注菜单开启。</strong>选择「开启电脑专注」，会以当前最低目标启动或继续本轮。主窗口进入全屏，Dock 和菜单栏隐藏，Cmd+Tab、隐藏应用和普通关闭／退出受到限制，其它屏幕显示专注遮罩。</li>
+              <li><strong>仍然可以正常学习。</strong>视频页的左右键切句、空格播放／暂停和每句三遍模式继续可用；点击问题或写作编辑器后，按键仍用于输入文字。</li>
+              <li><strong>需要提前退出时走紧急出口。</strong>按 <code>Ctrl + Shift + Esc</code> 可立即解除电脑专注并暂停计时；也可以点击「紧急结束」，等待 5 秒后确认。macOS 的 <code>Option + Command + Esc</code> 仍可打开系统强制退出窗口。</li>
+              <li><strong>注意系统上限。</strong>电脑专注最多持续一小时，到时恢复桌面，本轮学习继续计时。Clarora 失去前台时会自动解除限制并暂停计时，回来后恢复此模式进入的全屏窗口。Windows 目前使用普通专注计时，不包含这层桌面限制。</li>
+            </ol>
+            <h3>训练记录与下一档目标</h3>
+            <p>结束一轮后可以评价疲劳为「轻松」「一般」或「疲劳」，也可以稍后在「冥想放松 → 专注训练」补记最近一轮。建议使用最近 3 轮、且目标时长相同的训练记录：三轮都达标、每轮分心至多一次、并且都评价为轻松时，会建议下一档目标，例如 20 分钟升到 25 分钟，45 分钟可以尝试 60 分钟。你可以在训练区手动采用建议。</p>
+            <div class="guide-table-wrap"><table><caption>专注时的提示音</caption><thead><tr><th scope="col">时机</th><th scope="col">提示</th></tr></thead><tbody>
+              <tr><th scope="row">开始新一轮</th><td>响一声，确认计时已经开始。</td></tr>
+              <tr><th scope="row">达到最低目标</th><td>响一声，计时继续，不会强制结束。</td></tr>
+              <tr><th scope="row">手动结束本轮</th><td>响两声，随后进入休息。</td></tr>
+              <tr><th scope="row">休息到期</th><td>响两声，等待你手动开始下一轮。</td></tr>
+            </tbody></table></div>
+            <p class="guide-note"><span class="guide-badge">新版功能</span> 新构建会保存运行中的截止时间或暂停剩余时间，退出后重开按实际经过时间恢复。关闭期间已经到期时只结算上一轮，并停在下一阶段等待继续，不自动累计离线多轮。提示音使用独立播放器，学习音频和背景音乐可以继续播放；没有声音时先检查应用音量、系统输出设备和版本。早期没有保存的计时无法事后找回。</p>
           </section>
 
           <section class="guide-chapter" id="backup" data-guide-chapter data-keywords="备份 同步 S3 OSS 云 换机 ZIP RN 合并 密钥 迁移" aria-labelledby="backup-title">
