@@ -32,6 +32,16 @@ for (const [name, p] of Object.entries(metadata.platforms)) {
 }
 releasedPlatforms.length && pass(`元数据版本 ${metadata.tag},released 平台:${releasedPlatforms.map(([n]) => n).join(", ")}`);
 
+// 1b) 手册核对信息:手册必须明确适用于哪个版本,而不是只写一个孤立日期
+const guide = JSON.parse(read("guide-meta.json"));
+if (!/^\d+\.\d+\.\d+$/.test(guide.version ?? "")) fail(`guide-meta version 非法:${guide.version}`);
+if (!/^\d{4}-\d{2}-\d{2}$/.test(guide.reviewed ?? "")) fail(`guide-meta reviewed 日期非法:${guide.reviewed}`);
+const guideSource = read("guide.html");
+if (!guideSource.includes("__GUIDE_VERSION__") || !guideSource.includes("__GUIDE_REVIEWED__")) {
+  fail("guide.html 缺少 guide-meta 构建令牌");
+}
+pass(`手册核对于 v${guide.version} (${guide.reviewed})`);
+
 // 2) 源码令牌:下载卡片必须使用构建期令牌(而非手写链接或状态)
 const html = read("index.html");
 for (const name of ["macos", "windows", "android", "ios"]) {
@@ -104,7 +114,12 @@ if (checkDist && fs.existsSync(distIndex)) {
   const rendered = read(path.join("dist", "index.html"));
   checkPages("dist/");
   const handbook = read("dist/guide.html");
-  if (handbook.includes("__SITE_VERSION__") || !handbook.includes(`v${distMeta.version}`)) fail("手册未使用本次构建的版本信息");
+  if (handbook.includes("__SITE_VERSION__") || handbook.includes("__GUIDE_")
+    || !handbook.includes(`v${distMeta.version}`)
+    || !handbook.includes(`v${guide.version}`)
+    || !handbook.includes(guide.reviewed)) {
+    fail("手册未使用本次构建的版本或核对信息");
+  }
   for (const name of ["macos", "windows", "android", "ios"]) {
     if (rendered.includes(`__${name.toUpperCase()}_BADGE__`)) fail(`dist 中残留未填充令牌:${name}`);
   }

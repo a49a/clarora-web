@@ -16,7 +16,7 @@ const results = [];
 for (const mode of ["split", "main-apk-only", "rn-draft", "rn-bad-source", "rn-channel", "rn-ipa", "latest-rn", "future-rn", "metadata-file", "offline"]) {
   const dir = await mkdtemp(path.join(os.tmpdir(), "clarora-routing-"));
   try {
-    for (const name of ["scripts", "package.json", "release-metadata.json", "index.html", "guide.html", "guide.css", "guide.js", "styles.css", "site.js", "config.js", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
+    for (const name of ["scripts", "package.json", "release-metadata.json", "index.html", "guide.html", "guide-meta.json", "guide.css", "guide.js", "styles.css", "site.js", "config.js", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
       await cp(path.join(repo, name), path.join(dir, name), { recursive: true });
     }
     const local = JSON.parse(await readFile(path.join(dir, "release-metadata.json"), "utf8"));

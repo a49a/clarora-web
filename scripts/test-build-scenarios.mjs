@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const inputs = ["index.html", "guide.html", "guide.css", "guide.js", "styles.css", "site.js", "config.js", "favicon.svg", "favicon.png", "apple-touch-icon.png", "release-metadata.json", "package.json", "scripts"];
+const inputs = ["index.html", "guide.html", "guide-meta.json", "guide.css", "guide.js", "styles.css", "site.js", "config.js", "favicon.svg", "favicon.png", "apple-touch-icon.png", "release-metadata.json", "package.json", "scripts"];
 
 let failures = 0;
 const pass = name => console.log(`✓ ${name}`);

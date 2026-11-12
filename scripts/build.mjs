@@ -214,6 +214,16 @@ const tokenFor = (metadata, name) => {
 
 export async function buildSite() {
   const metadata = await loadMetadata();
+  const guide = JSON.parse(await readFile(new URL("guide-meta.json", root), "utf8"));
+  if (!/^\d+\.\d+\.\d+$/.test(guide.version ?? "")) {
+    throw new Error("guide-meta.json version 非法:" + guide.version);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(guide.reviewed ?? "")) {
+    throw new Error("guide-meta.json reviewed 日期非法:" + guide.reviewed);
+  }
+  if (guide.version !== metadata.version) {
+    console.warn(`手册核对于 v${guide.version},下载页当前为 v${metadata.version}`);
+  }
   if (!/^\d+\.\d+\.\d+$/.test(metadata.version)) {
     throw new Error("release-metadata.json 版本非法:" + metadata.version);
   }
@@ -265,7 +275,9 @@ export async function buildSite() {
   html = html.replaceAll("__LATEST_URL__", escapeHtml(metadata.latest_url));
   await writeFile(new URL("index.html", out), html);
   const handbook = (await readFile(new URL("guide.html", root), "utf8"))
-    .replaceAll("__SITE_VERSION__", escapeHtml(metadata.version));
+    .replaceAll("__SITE_VERSION__", escapeHtml(metadata.version))
+    .replaceAll("__GUIDE_VERSION__", escapeHtml(guide.version))
+    .replaceAll("__GUIDE_REVIEWED__", escapeHtml(guide.reviewed));
   await writeFile(new URL("guide.html", out), handbook);
 
   // dist/release-metadata.json:构建实际使用的解析结果,postbuild 的 --dist
