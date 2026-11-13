@@ -85,17 +85,18 @@
               <li><strong>升级前先导出资料备份。</strong>退出正在运行的 Clarora，再替换应用或安装新版。检查 Dock、任务栏和快捷方式是否仍指向旧安装位置。</li>
               <li><strong>只运行自己确认来源的下载。</strong>未签名构建可能触发系统提示。macOS 可在系统「隐私与安全性」中查看拦截原因；Windows 先核对下载来源和文件完整性，再按系统提示处理。</li>
             </ol>
+            <p class="guide-note"><strong>RN 桌面构建：</strong>RN 的 macOS / Windows 桌面构建已弃用，请选择上面的桌面主版本；Android / iOS RN 继续维护。</p>
             <p class="guide-note">桌面主版本与 RN 的本机资料目录独立，不会因为安装新版自动双向共享。迁移请使用<a href="#backup">备份／导入流程</a>。需要从源码构建时，查看<a href="https://github.com/a49a/clarora/blob/HEAD/clarora-gpui/README.md" target="_blank" rel="noopener noreferrer">桌面说明 ↗</a>或<a href="https://github.com/a49a/clarora/blob/HEAD/docs/platform-builds.md" target="_blank" rel="noopener noreferrer">RN 平台说明 ↗</a>。</p>
           </section>
 
-          <section class="guide-chapter" id="ai-setup" data-guide-chapter data-keywords="设置 AI API Key Base URL 本地 模型 Whisper SenseVoice Kokoro 离线 401 404" aria-labelledby="ai-setup-title">
+          <section class="guide-chapter" id="ai-setup" data-guide-chapter data-keywords="设置 AI API Key Base URL 本地 模型 Whisper SenseVoice Kokoro 离线 401 404 OCR 图转文字 图片转文字 拍照识字 视觉模型 30MB" aria-labelledby="ai-setup-title">
             <p class="chapter-number">03 / SET UP AI</p><h2 id="ai-setup-title">分清本地模型与远端 AI</h2>
-            <p class="chapter-intro">已有资料的阅读、播放和复习可以离线使用。字幕转写可以选本地模型；聊天、中文翻译、写作批改和图片识字会调用你配置的模型服务。</p>
+            <p class="chapter-intro">已有资料的阅读、播放和复习可以离线使用。字幕转写可以选本地模型；聊天、中文翻译、写作批改和图转文字会调用你配置的模型服务。</p>
             <h3>配置聊天、翻译和批改</h3>
             <ol class="guide-steps">
               <li><strong>打开「设置 → AI 服务」。</strong>填写服务商提供的 Base URL、模型 ID 和 API Key。地址格式例如 <code>https://api.example.com/v1</code>，这是格式示例，需要替换为你的服务地址。</li>
               <li><strong>保存，再做一个短请求。</strong>点击「保存 AI 与学习设置」，打开「学习助手」提出一个简短问题。能收到完整回答后，再尝试长文批改或整组翻译。</li>
-              <li><strong>按任务选择合适能力。</strong>图片识字需要视觉能力，可单独填写视觉模型。远端转写需要服务同时支持音频转写接口；只支持聊天的模型不能直接当作转写模型。</li>
+              <li><strong>按任务选择合适能力。</strong>图转文字需要视觉能力，可单独填写视觉模型。远端转写需要服务同时支持音频转写接口；只支持聊天的模型不能直接当作转写模型。</li>
             </ol>
             <h3>选用本地字幕模型</h3>
             <ol class="guide-steps">
@@ -103,7 +104,21 @@
               <li><strong>切换本机转写并保存。</strong>将转写引擎设为 <code>local</code>，选用已下载模型，再点击保存。仅下载文件或点击选用而不保存，不代表配置已生效。</li>
               <li><strong>用短音频验证。</strong>生成一小段字幕，确认文字和时间轴。完整分发包会包含相应辅助程序；自行构建缺少 FFmpeg 或推理运行库时，可在「运行环境」查看具体缺项。</li>
             </ol>
+            <p class="guide-note"><strong>模型取舍：</strong>英语转写可先用 Small.en 完成大部分字幕；Medium.en 更准确，但耗时更长，后续只对字幕明显不准确的音频单独重转。中文或多语言请使用 Small、SenseVoice 或 large-v3-turbo，不要选择 .en 模型。</p>
             <p class="guide-note"><strong>网络与密钥：</strong>选择本地转写时，转写本身不上传音频；远端转写、翻译和 AI 问答会发送相应材料。较新桌面构建的密钥默认保存在本机数据库，可在「密钥存储」开启系统凭证库保护；不同版本与 RN 的方式可能不同。应用导出的资料备份不包含这些密钥，换机后需单独配置。</p>
+            <h3>图片转文字（OCR）</h3>
+            <p>桌面主版本把这一页叫「图转文字」，Android / iOS RN 仍叫「拍照识字」。两者都会把图片发送给你在「设置 → AI 服务」中配置的视觉模型，返回可复制的文字；识别本身需要联网，不属于本地字幕模型的离线能力。</p>
+            <div class="guide-table-wrap"><table><caption>先按设备选择入口</caption><thead><tr><th scope="col">设备</th><th scope="col">入口与操作</th><th scope="col">边界</th></tr></thead><tbody>
+              <tr><th scope="row">macOS / Windows 桌面</th><td>打开「图转文字」，点击「导入图片并识字」，选择一张图片。识别结果会显示在页面上并保存在本机识别记录中，可选中复制或删除；也会作为学习助手的当前材料。</td><td>没有拍照入口；仅支持 JPG、PNG、WebP，单张不超过 30 MB。</td></tr>
+              <tr><th scope="row">Android RN</th><td>打开「拍照识字」，可直接拍照，或从相册选择图片。识别记录可展开、复制和删除。</td><td>拍照需要相机权限；使用独立的视觉模型配置。</td></tr>
+              <tr><th scope="row">iOS RN</th><td>打开「拍照识字」，从「文件」导入图片。识别记录可展开、复制和删除。</td><td>不提供拍照入口；使用独立的视觉模型配置。</td></tr>
+            </tbody></table></div>
+            <ol class="guide-steps">
+              <li><strong>先配置视觉模型。</strong>在「设置 → AI 服务」填写 Base URL、API Key 和视觉模型。桌面版的视觉模型留空时会回退到共用聊天模型；RN 需要单独填写视觉模型，只支持聊天的模型不能直接识别图片。</li>
+              <li><strong>识别后先核对文字。</strong>结果按原图内容返回，不自动翻译。先检查段落、专有名词和明显漏字，再复制到笔记，或交给学习助手继续提问。</li>
+              <li><strong>知道哪些内容会同步。</strong>OCR 文字和识别记录随资料备份合并，原始图片不纳入备份。换设备后可以查看文字，但不能从备份还原原图。</li>
+            </ol>
+            <p class="guide-note">远端识别会把图片发送到你配置的服务；对隐私敏感的书页，先确认服务条款。扫描型 PDF 的页面图转文字也走同一条视觉模型路径，不会因为文档保存在本机就自动离线识别。</p>
           </section>
 
           <section class="guide-chapter" id="audio" data-guide-chapter data-keywords="音频 管理 导入 练习组 改名 目录 命令 悬浮窗 Kokoro 文字转音频 精听 盲听 单句循环 每句三遍 每句五遍 三遍 五遍 截取片段 当前句 跟随 倍速 句型搜索 整组字幕 后台任务" aria-labelledby="audio-title">
@@ -127,7 +142,7 @@
             <p>「跟随」开启时，当前播放句会自动滚到列表中间；想自己翻看时可以先关掉。点击字幕单词或句子仍用于定位播放；开启「截取片段」后，点击和 Shift 点击才改为设置片段边界。</p>
             <h3>留下：从听到复习</h3>
             <ol class="guide-steps">
-              <li><strong>截出一句真正有用的内容。</strong>开启「截取片段」，点击单词设置 A 点，Shift 点击扩展，再拖动波形边界微调。字幕里的 A/B 竖线也可以直接拖动，边界会随字符位置变化；确认后保存为闪卡，卡片会记住来源和时间范围。</li>
+              <li><strong>截出一句真正有用的内容。</strong>开启「截取片段」时，会先用当前句的起止时间作为默认 A/B；再点击单词设置 A 点，Shift 点击扩展，或拖动波形边界微调。字幕里的 A/B 竖线也可以直接拖动，边界会随字符位置变化；确认后保存为闪卡，卡片会记住来源和时间范围。</li>
               <li><strong>在字幕里找回已收藏的句子。</strong>已保存的片段会在字幕中显示绿色下划线。左键仍用于定位播放；右键下划线可以查看对应卡片，或取消收藏复习。取消只移除闪卡和复习记录，媒体与字幕仍在。</li>
               <li><strong>不用离开本篇，就能复习重点句。</strong>收藏过片段后，音频学习工具栏会出现「重点句 N」。点击后按收藏顺序连续播放本篇保存的 A/B 片段，顶部复习条显示当前句和范围；可以切上一句、下一句，或退出复习。退出后会回到整篇播放，不会把你锁在片段队列里。</li>
               <li><strong>第二天再回到闪卡。</strong>到「闪卡复习」选择音频片段卡，先听再揭示文字。按真实掌握程度评分，下一次复习时间会跟着变化。</li>
@@ -186,7 +201,7 @@ Small steps make a difference.</code></pre></div>
               <tr><th scope="row">反复听一句</th><td>点字幕行或控制栏进入「单句循环」。播放器只重复当前句，手动换句或停止后退出。</td></tr>
               <tr><th scope="row">每句自动多遍</th><td>选择「每句三遍」或「每句五遍」。当前句播放三次／五次后自动进入下一条有效字幕；句间空白会跳到下一句，最后一句完成后暂停，不自动换集。</td></tr>
               <tr><th scope="row">每句四遍／六遍</th><td>选择「每句四遍」或「每句六遍」。当前句播放四次／六次后自动进入下一条有效字幕；前两遍／前三遍隐藏字幕，后面几遍恢复显示，适合先盲听后核对。点击字幕或左右键会从目标句重新开始该句的重复。逐句循环默认在字幕结束时间后保留 0.35 秒尾音，并在下一条字幕前截止，避免最后的 S 音被切掉；视频设置菜单可选 0.20／0.35／0.50／0.65 秒。</td></tr>
-              <tr><th scope="row">练一个范围</th><td>从控制栏「设置」开启 A–B，标记起点和终点。范围内循环时，单集循环和自动下一 P 不会抢先执行。</td></tr>
+              <tr><th scope="row">练一个范围</th><td>从控制栏「设置」开启 A–B，默认取当前句起止；再拖动调整起点和终点。范围内循环时，单集循环和自动下一 P 不会抢先执行。</td></tr>
               <tr><th scope="row">切换字幕句</th><td>按 ← / → 或控制栏「上一句／下一句」，从目标句句首开始；暂停时切句仍保持暂停。</td></tr>
               <tr><th scope="row">看清字幕</th><td>控制栏「设置」调整 14–32px 字号，普通与全屏共用并自动保存。开启「跟随」会把当前句滚到可视区域中间。</td></tr>
               <tr><th scope="row">播放与全屏</th><td>单击画面播放／暂停；双击画面、F11 或控制栏「全屏」进入原生全屏，Esc 退出，播放状态保持。</td></tr>
@@ -209,7 +224,8 @@ Small steps make a difference.</code></pre></div>
               <li><strong>导入自己的词卡。</strong>在「闪卡复习」的学习选项中选择文本或 Anki 导入。先用几张卡确认格式，再导入大量内容；RN 移动端的导入能力请查看平台说明。</li>
               <li><strong>选择复习方式和类型。</strong>计划复习优先安排到期卡，并受每日新卡额度限制；自主复习按你选择的内容练习。可按单词、句子、AI 问答或片段筛选。</li>
               <li><strong>先回忆，再评分。</strong>查看答案后按真实掌握程度选择评分，它会影响下一次复习时间。音频片段卡可先听再揭示文字。</li>
-              <li><strong>从精听中制作片段。</strong>在音频学习开启「截取片段」，点击单词确定范围，Shift 点击扩展，拖动波形上的左右边界试听；保存为闪卡。视频使用 A/B 范围保存片段。</li>
+              <li><strong>从精听中制作片段。</strong>在音频学习开启「截取片段」，点击单词确定范围，Shift 点击扩展，拖动波形上的左右边界试听；保存为闪卡。视频可直接在字幕行点「收藏本句」，按该句时间范围保存；也可用 A/B 工具保存自定义范围。</li>
+              <li><strong>集中查看全部卡片。</strong>桌面端左侧「闪卡列表」页列出全部五类复习卡片，显示原文、译文、类型和媒体标记；可开启「循环复习」，手动切到最后一张后回到第一张，点「复习全部卡片」进入自由浏览。</li>
             </ol>
             <div class="guide-code-box"><div><strong>文本词卡格式示例</strong><button type="button" class="guide-copy" data-copy-code="cards-example" hidden>复制示例</button></div><pre><code id="cards-example">clear - 清晰的
 focus - 专注
@@ -256,7 +272,7 @@ review - 复习</code></pre></div>
             <ol class="guide-steps">
               <li><strong>导入书籍。</strong>进入「文档阅读」，选择 PDF、EPUB 或 TXT。桌面主版本支持这三种格式；RN 的文档阅读以对应版本的 PDF 能力为准。</li>
               <li><strong>用目录和页码定位。</strong>打开书库中的材料。书库和目录在正文左侧的可收起侧栏中，点击「目录」可展开或收起；通过目录、上一页／下一页或页码导航阅读。PDF 可调整缩放，电子书按章节和内容分页展示。</li>
-              <li><strong>围绕当前材料提问。</strong>打开学习助手，先确认引用的是正确书籍或页面，再问词义、段落结构或内容理解。扫描型 PDF 的页面图像识字需要视觉模型和网络服务。</li>
+              <li><strong>围绕当前材料提问。</strong>打开学习助手，先确认引用的是正确书籍或页面，再问词义、段落结构或内容理解。扫描型 PDF 的页面图转文字需要视觉模型和网络服务。</li>
             </ol>
             <p class="guide-note">点击学习助手会先把当前材料的全文背景放入引用区：音频／视频为可用字幕全文，文档为当前页文字，口语为题面与当前草稿；只装载、不自动发送，发送前可查看或移除。盲听隐藏的字幕不会自动加入。</p>
             <ol class="guide-steps">
@@ -265,7 +281,7 @@ review - 复习</code></pre></div>
             <p class="guide-note">EPUB 与 PDF 的分页方式不同，页码可能不对应纸质书。带加密保护或其他格式的书籍不能保证直接打开；遇到格式错误，先确认文件完整且属于支持的类型。</p>
           </section>
 
-          <section class="guide-chapter" id="speaking" data-guide-chapter data-keywords="跟读 口语 口语练习 题库 分组 标签 题目 录音 麦克风 评分 草稿 目标词数 生成读音 Kokoro 整组批改 对照 漏读 语速 OCR 拍照 图片 识字" aria-labelledby="speaking-title">
+          <section class="guide-chapter" id="speaking" data-guide-chapter data-keywords="跟读 口语 口语练习 题库 分组 标签 题目 录音 麦克风 评分 草稿 目标词数 生成读音 Kokoro 整组批改 对照 漏读 语速" aria-labelledby="speaking-title">
             <p class="chapter-number">10 / SPEAKING</p><h2 id="speaking-title">用题库把口语练成日常</h2>
             <p class="chapter-intro">口语练习不只是按下录音键。先有一道值得回答的题，再准备参考表达、写下自己的答案，最后录下来对照。Clarora 把题库、草稿和跟读记录放在同一页，方便你反复练同一道题。</p>
             <h3>建立口语题库</h3>
@@ -298,8 +314,6 @@ review - 复习</code></pre></div>
             </tbody></table></div>
             <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 题库与题目的完整备份</h3><p>口语分组、题目、题目音频、作答草稿、目标词数和批改历史都会纳入资料备份；原始跟读录音不包含在备份里。换设备前先导出本机 ZIP 或完成云备份，恢复后核对题目音频是否可读。</p></div>
             <p class="guide-note"><strong>分数说明：</strong>口语分数表示识别文本与参考句的对齐程度，包含漏读、读错、多读、完整度和语速，并不是声学发音或音素评测。录音依赖麦克风权限和系统输入设备；没有声音时先检查这两项，再重录。AI 批改和翻译会把对应文字发送到你配置的模型服务。</p>
-            <h3>顺带：拍照识字</h3>
-            <p>进入「拍照识字」，选择需要识别的图片；支持拍照的设备可从相应入口拍摄。先配置可用的视觉模型，识别结果可以复制，或交给学习助手继续提问。远端视觉识别会发送图片，不属于本地字幕模型的离线能力；扫描型 PDF 的页面识字也走同一条视觉模型路径。</p>
           </section>
 
           <section class="guide-chapter" id="focus" data-guide-chapter data-keywords="专注 专注模式 番茄钟 冥想 计时 提示音 暂停 退出 重启 恢复 最低目标 分心 疲劳 训练建议 记想法 想法 笔记 电脑专注 全屏 Dock 菜单栏 紧急结束 Ctrl Shift Esc" aria-labelledby="focus-title">
@@ -361,7 +375,7 @@ review - 复习</code></pre></div>
               <details><summary>音频、视频或计时没有声音</summary><p>依次检查客户端是否暂停／静音、音量、系统输出设备和耳机连接。换一个已知能正常播放的文件再试。录音问题还需检查麦克风权限和输入设备；计时提示音与学习媒体属于不同播放路径。</p></details>
               <details><summary>B 站视频导入失败或某个 P 无法播放</summary><p>检查链接是否正确、当前网络能否访问来源，以及该 P 是否仍可观看。已恢复的来源记录不表示视频文件已经下载；选择对应 P 按提示准备媒体。查看客户端任务错误，不要用另一 P 的字幕掩盖缺失媒体。</p></details>
               <details><summary>换设备后看不到资料或云端版本</summary><p>确认旧设备已完成一次备份，新设备使用相同 Endpoint、Bucket 和前缀，读取版本后执行合并。两版客户端并不共用同一资料目录。保留旧库和备份，先核对附件路径与读取权限；仅配置云存储不会自动下载资料。</p></details>
-              <details><summary>哪些操作会联网，资料会发到哪里</summary><p>本地阅读、复习、播放以及配置正确的本地转写／语音合成可离线运行。模型下载、B 站导入和云备份需要联网；远端转写会发送音频，翻译／问答／写作批改会发送引用文本，图片识字会发送图片至你选择的服务。官网教程不读取或上传这些资料。</p></details>
+              <details><summary>哪些操作会联网，资料会发到哪里</summary><p>本地阅读、复习、播放以及配置正确的本地转写／语音合成可离线运行。模型下载、B 站导入和云备份需要联网；远端转写会发送音频，翻译／问答／写作批改会发送引用文本，图转文字会发送图片至你选择的服务。官网教程不读取或上传这些资料。</p></details>
             </div>
             <p class="guide-note">仍有问题时，可在<a href="https://github.com/a49a/clarora/issues" target="_blank" rel="noopener noreferrer">GitHub Issues ↗</a>说明客户端版本、系统、操作步骤和错误信息。截图或日志中请去掉密钥与不希望公开的学习资料。</p>
           </section>
