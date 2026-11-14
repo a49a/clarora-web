@@ -175,16 +175,18 @@ Small steps make a difference.</code></pre></div>
             <div class="guide-callout"><h3><span class="guide-badge">新版功能</span> 整组音频处理</h3><p>在「音频管理」选择目标组，点击整组生成英文或整组翻译中文。程序按组处理，跳过已有结果；部分中文缺失时按需补齐。发生错误会继续处理其他音频，并汇总失败项。取消后已经完成的结果会保留。</p><p>这与视频的「全部P翻译中文」规则不同：视频只要某个 P 任一句已有中文，就跳过<strong>整个 P</strong>，避免覆盖已有翻译。</p></div>
           </section>
 
-          <section class="guide-chapter" id="video" data-guide-chapter data-keywords="视频 B站 bilibili BV 分P 选集 无限 重复三次 重复五次 三遍 五遍 三遍精听 五遍精听 字幕导航 文稿 倍速 0.7 0.9 进度 自动下一P 字号 跟随 收藏 导出SRT 全部P 整组合集" aria-labelledby="video-title">
+          <section class="guide-chapter" id="video" data-guide-chapter data-keywords="视频 B站 bilibili YouTube 视频链接 单视频 BV 分P 选集 无限 重复三次 重复五次 三遍 五遍 三遍精听 五遍精听 字幕导航 文稿 倍速 0.7 0.9 进度 自动下一P 字号 跟随 收藏 导出SRT 全部P 整组合集" aria-labelledby="video-title">
             <p class="chapter-number">06 / VIDEO STUDY</p><h2 id="video-title">一句一句听懂视频</h2>
-            <p class="chapter-intro">视频比音频多了来源、分 P 和画面，但精听方法相同：先把要学的这一集准备好，再让字幕带着你走。不要一边找资源一边学，先完成准备，再进入播放。</p>
+            <p class="chapter-intro">视频比音频多了来源、选集（bilibili 分 P）和画面，但精听方法相同：先把要学的这一集准备好，再让字幕带着你走。不要一边找资源一边学，先完成准备，再进入播放。</p>
             <h3>准备：先选来源，再选这一集</h3>
-            <div class="guide-table-wrap"><table><caption>两种视频来源的差别</caption><thead><tr><th scope="col">来源</th><th scope="col">导入方式</th><th scope="col">需要注意</th></tr></thead><tbody>
+            <div class="guide-table-wrap"><table><caption>三种视频来源的差别</caption><thead><tr><th scope="col">来源</th><th scope="col">导入方式</th><th scope="col">需要注意</th></tr></thead><tbody>
               <tr><th scope="row">本地视频</th><td>在「视频学习 → 我的视频」选择本机文件，可一次选择多个。</td><td>文件移动或删除后需要重新定位；本机 ZIP 备份会保留可用的原文件。</td></tr>
               <tr><th scope="row">bilibili</th><td>在「更多」中填写 BV 号、av 号或完整链接；有 <code>?p=</code> 时直接导入指定集。</td><td>下载受网络和来源可用性影响。云备份只保存来源链接与字幕，恢复后需要重新下载原片。</td></tr>
+              <tr><th scope="row">YouTube</th><td>填写 <code>watch?v=</code>、<code>youtu.be</code>、Shorts、Live 或 embed 链接，点击「下载并导入」。带播放列表参数的 watch 链接按单个视频处理。</td><td>YouTube 是单视频，没有分 P／选集；下载结果按本地视频保存，云备份会上传视频文件。裸播放列表、频道和无效视频 ID 会被拒绝。Live 指直播回放，正在直播的流可能持续下载。</td></tr>
             </tbody></table></div>
+            <p>bilibili 与 YouTube 共用「下载并导入」主按钮；只有 bilibili 需要「读取分P（B站）」来选集。</p>
             <ol class="guide-steps">
-              <li><strong>把视频收藏起来。</strong>导入后会进入「我的视频」，显示来源、总 P 数和已下载数量。重复导入同一文件会去重，同名但路径不同的文件会分别保留。</li>
+              <li><strong>把视频收藏起来。</strong>导入后会进入「我的视频」并显示来源；bilibili 还显示总 P 数和已下载数量。重复导入同一文件会去重，同名但路径不同的文件会分别保留；再次导入同一 YouTube 链接会复用已下载文件。</li>
               <li><strong>选对 P 再准备媒体。</strong>多 P 视频在标题栏 P 数或右侧「选集」切换。每个 P 的字幕和时间轴分别保存，不要把同一篇文稿套到另一个 P。</li>
               <li><strong>需要连续看时打开自动下一 P。</strong>当前集真正播放结束后，已下载的下一集会直接播放，未下载的会先下载；最后一集播完停止。单集循环或 A–B 循环优先，此时不会自动换集。</li>
             </ol>
@@ -373,9 +375,9 @@ review - 复习</code></pre></div>
               <details><summary>AI 返回 401、404 或 429</summary><p>401 通常与密钥或授权有关；404 检查地址、模型 ID 和接口是否支持；429 查看服务商的限流或额度提示。以实际错误内容为准，避免反复提交长音频。Base URL 不是服务商控制台的网页地址。</p></details>
               <details><summary>模型已经下载，仍提示无法转写</summary><p>确认模型已选用并保存、转写引擎是 local，且模型文件完整。打开「运行环境」检查 FFmpeg 和推理辅助程序；下载模型不会自动安装自行构建所缺的原生运行库。先使用短音频复验。</p></details>
               <details><summary>音频、视频或计时没有声音</summary><p>依次检查客户端是否暂停／静音、音量、系统输出设备和耳机连接。换一个已知能正常播放的文件再试。录音问题还需检查麦克风权限和输入设备；计时提示音与学习媒体属于不同播放路径。</p></details>
-              <details><summary>B 站视频导入失败或某个 P 无法播放</summary><p>检查链接是否正确、当前网络能否访问来源，以及该 P 是否仍可观看。已恢复的来源记录不表示视频文件已经下载；选择对应 P 按提示准备媒体。查看客户端任务错误，不要用另一 P 的字幕掩盖缺失媒体。</p></details>
+              <details><summary>B 站或 YouTube 视频导入失败</summary><p>检查链接是否为完整单视频地址、当前网络能否访问来源，以及视频是否仍可观看。B 站还要确认该 P 是否存在；YouTube 的裸播放列表和频道链接不受支持。已恢复的来源记录不表示视频文件已经下载，选择对应 P 或重新粘贴链接按提示准备媒体。查看客户端任务错误，不要用另一 P 的字幕掩盖缺失媒体。</p><p>YouTube 出现 <code>Sign in to confirm you’re not a bot</code> 时，先在浏览器登录 YouTube，再在弹窗中选择该浏览器重试；客户端会用 <code>--cookies-from-browser</code> 重新下载并记住选择。Cookie 只在本机交给 yt-dlp，不会上传；macOS 可能要求钥匙串或完全磁盘访问授权。仍失败时换一个已登录的浏览器或更新安装包内的 yt-dlp。</p></details>
               <details><summary>换设备后看不到资料或云端版本</summary><p>确认旧设备已完成一次备份，新设备使用相同 Endpoint、Bucket 和前缀，读取版本后执行合并。两版客户端并不共用同一资料目录。保留旧库和备份，先核对附件路径与读取权限；仅配置云存储不会自动下载资料。</p></details>
-              <details><summary>哪些操作会联网，资料会发到哪里</summary><p>本地阅读、复习、播放以及配置正确的本地转写／语音合成可离线运行。模型下载、B 站导入和云备份需要联网；远端转写会发送音频，翻译／问答／写作批改会发送引用文本，图转文字会发送图片至你选择的服务。官网教程不读取或上传这些资料。</p></details>
+              <details><summary>哪些操作会联网，资料会发到哪里</summary><p>本地阅读、复习、播放以及配置正确的本地转写／语音合成可离线运行。模型下载、B 站与 YouTube 导入和云备份需要联网；远端转写会发送音频，翻译／问答／写作批改会发送引用文本，图转文字会发送图片至你选择的服务。官网教程不读取或上传这些资料。</p></details>
             </div>
             <p class="guide-note">仍有问题时，可在<a href="https://github.com/a49a/clarora/issues" target="_blank" rel="noopener noreferrer">GitHub Issues ↗</a>说明客户端版本、系统、操作步骤和错误信息。截图或日志中请去掉密钥与不希望公开的学习资料。</p>
           </section>
