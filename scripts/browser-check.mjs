@@ -7,14 +7,14 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..", "dist");
-const types = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png" };
-const allowed = new Set(["/index.html", "/guide.html", "/guide.css", "/guide.js", "/styles.css", "/site.js", "/config.js", "/favicon.svg", "/favicon.png", "/apple-touch-icon.png"]);
+const types = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".mp4": "video/mp4", ".mp3": "audio/mpeg", ".vtt": "text/vtt; charset=utf-8", ".srt": "application/x-subrip" };
+const allowed = new Set(["/index.html", "/guide.html", "/guide.css", "/guide.js", "/styles.css", "/site.js", "/config.js", "/clarora-logo.svg", "/favicon.svg", "/favicon.png", "/apple-touch-icon.png"]);
 
 const server = createServer(async (req, res) => {
   const requested = req.url.split("?")[0].replace(/^\/preview\/clarora-web(?=\/)/, "");
   const url = requested === "/" ? "/index.html" : requested;
   try {
-    if (!allowed.has(url)) { res.writeHead(404); res.end(); return; }
+    if (!allowed.has(url) && !/^\/media\/[a-z0-9-]+\.(?:jpg|mp4|mp3|srt|vtt)$/.test(url)) { res.writeHead(404); res.end(); return; }
     const body = await readFile(path.join(root, url));
     res.writeHead(200, { "Content-Type": types[path.extname(url)] ?? "application/octet-stream" });
     res.end(body);

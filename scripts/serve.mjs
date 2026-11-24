@@ -17,6 +17,11 @@ const types = {
   ".json": "application/json; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".mp4": "video/mp4",
+  ".mp3": "audio/mpeg",
+  ".vtt": "text/vtt; charset=utf-8",
+  ".srt": "application/x-subrip",
 };
 const allowed = new Set([
   "/index.html",
@@ -27,6 +32,7 @@ const allowed = new Set([
   "/site.js",
   "/config.js",
   "/release-metadata.json",
+  "/clarora-logo.svg",
   "/favicon.svg",
   "/favicon.png",
   "/apple-touch-icon.png",
@@ -37,7 +43,7 @@ http
     try {
       const route = new URL(req.url, "http://localhost").pathname;
       const file = route === "/" ? "/index.html" : route;
-      if (!allowed.has(file)) {
+      if (!allowed.has(file) && !/^\/media\/[a-z0-9-]+\.(?:jpg|mp4|mp3|srt|vtt)$/.test(file)) {
         res.writeHead(404);
         res.end("Not found");
         return;

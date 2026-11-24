@@ -1,4 +1,4 @@
-import { mkdir, copyFile, rm, readFile, writeFile } from "node:fs/promises";
+import { mkdir, copyFile, cp, rm, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 const root = new URL("../", import.meta.url);
 const out = new URL("dist/", root);
@@ -251,7 +251,8 @@ export async function buildSite() {
 
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
-  for (const file of ["styles.css", "site.js", "guide.css", "guide.js", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
+  await cp(new URL("media/", root), new URL("media/", out), { recursive: true });
+  for (const file of ["styles.css", "site.js", "guide.css", "guide.js", "clarora-logo.svg", "favicon.svg", "favicon.png", "apple-touch-icon.png"]) {
     await copyFile(new URL(file, root), new URL(file, out));
   }
 

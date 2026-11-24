@@ -72,7 +72,7 @@ function checkPages(prefix = "") {
     const source = read(path.join(prefix, file));
     const ids = [...source.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
     if (new Set(ids).size !== ids.length) fail(`${prefix}${file} 包含重复 id`);
-    for (const match of source.matchAll(/(?:href|src)="([^"]+)"/g)) {
+    for (const match of source.matchAll(/(?:href|src|poster)="([^"]+)"/g)) {
       const href = match[1];
       if (/^(?:https?:|mailto:|data:|__)/.test(href)) continue;
       const target = new URL(href, `https://local.test/${file}`);
