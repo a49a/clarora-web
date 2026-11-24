@@ -52,6 +52,9 @@ try {
   // 1) 下载交互:已发布平台使用元数据解析出的下载地址并新标签打开;
   //    待发布平台指向构建指南。
   await page.goto(base, { waitUntil: "networkidle" });
+  const starter = await page.request.get(`${base}/guide.html`);
+  if (!(await starter.text()).includes("下载双语字幕 SRT") ||
+      !(await page.request.get(`${base}/media/first-listen.srt`)).ok()) fail("入门样例下载缺失");
   for (const [name, p] of Object.entries(metadata.platforms)) {
     const link = page.locator(`a[data-download="${name}"]`);
     if (p.status === "released") {
