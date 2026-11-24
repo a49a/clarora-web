@@ -1,0 +1,14 @@
+1
+00:00:00,500 --> 00:00:02,497
+I thought the talk started at nine.
+我以为讲座九点开始。
+
+2
+00:00:03,297 --> 00:00:05,921
+It turns out it starts at half past nine.
+结果是九点半开始。
+
+3
+00:00:06,721 --> 00:00:08,880
+Let's go over the notes while we wait.
+我们边等边复习笔记吧。
