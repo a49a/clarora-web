@@ -114,6 +114,9 @@ if (checkDist && fs.existsSync(distIndex)) {
   const rendered = read(path.join("dist", "index.html"));
   const shareImage = rendered.match(/property="og:image" content="https:\/\/a49a\.github\.io\/clarora-web\/([^"]+)"/);
   if (!shareImage || !fs.existsSync(path.join(root, "dist", shareImage[1]))) fail("首页分享图缺失");
+  const expectedInstaller = distMeta.platforms.windows.installer_url;
+  const renderedInstaller = rendered.match(/data-windows-installer href="([^"]+)"/)?.[1];
+  if (renderedInstaller !== expectedInstaller || rendered.includes("__WINDOWS_INSTALLER__")) fail("Windows 安装器与构建元数据不一致");
 
   checkPages("dist/");
   const handbook = read("dist/guide.html");

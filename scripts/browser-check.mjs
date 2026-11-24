@@ -79,6 +79,16 @@ try {
   if (!(await starter.text()).includes("下载双语字幕 SRT") ||
       !(await page.request.get(`${base}/media/first-listen.srt`)).ok()) fail("入门样例下载缺失");
 
+  const installer = page.locator("[data-windows-installer]");
+  const installerUrl = metadata.platforms.windows.installer_url;
+  if (installerUrl) {
+    const [popup] = await Promise.all([page.waitForEvent("popup"), installer.click()]);
+    await popup.waitForLoadState();
+    if (popup.url() !== installerUrl) fail("Windows 安装器入口未指向正确发行文件");
+    await popup.close();
+  } else if (await installer.count()) {
+    fail("发行缺少 Windows 安装器时仍显示下载入口");
+  }
   for (const [name, p] of Object.entries(metadata.platforms)) {
     const link = page.locator(`a[data-download="${name}"]`);
     if (p.status === "released") {

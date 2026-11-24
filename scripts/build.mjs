@@ -17,6 +17,9 @@ async function loadLocalMetadata() {
 // 资产名/URL/架构用远端值(资产改名后不再拼旧文件名);远端缺失或无效的
 // 平台一律降级为待发布,本地 released 状态不能凭空保留。
 class ReleaseMetadataError extends Error {}
+const windowsInstallerName = "Clarora-windows-x64-setup-unsigned.exe";
+const windowsInstallerUrl = tag => `https://github.com/a49a/clarora/releases/download/${tag}/${windowsInstallerName}`;
+
 function validUrl(value) {
   try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password; } catch { return false; }
 }
@@ -50,11 +53,14 @@ function mergeRemote(local, remote) {
     if (entry?.status === "released" && validUrl(url) && (name !== "ios" || iosChannel(entry))) {
       const assetName = typeof entry.asset_name === "string" && entry.asset_name ? entry.asset_name : url.split("/").pop();
       platforms[name] = { ...conf, ...entry, ...identity, status: "released", url, asset_name: assetName };
+      if (name === "windows" && (entry.installer_url !== windowsInstallerUrl(remote.tag) || entry.installer_url === url)) {
+        delete platforms[name].installer_url;
+      }
     } else {
       if (conf.status === "released") {
         console.warn(`平台 ${name} 在远端元数据中${entry ? "没有可用的下载地址" : "缺失"},按待发布渲染`);
       }
-      platforms[name] = { ...conf, ...identity, status: "planned", url: undefined, channel: undefined };
+      platforms[name] = { ...conf, ...identity, status: "planned", url: undefined, channel: undefined, installer_url: undefined };
     }
   }
   return {
@@ -148,6 +154,11 @@ async function fetchLatestMetadata(local) {
     const asset = name !== "ios" && conf.asset_name ? assets.find(a => a.name === conf.asset_name) : null;
     if (asset) {
       platforms[name] = { ...conf, status: "released", url: asset.browser_download_url };
+      if (name === "windows") {
+        platforms[name].installer_url = assets.find(
+          item => item.name === windowsInstallerName && item.browser_download_url === windowsInstallerUrl(release.tag_name)
+        )?.browser_download_url;
+      }
     } else {
       platforms[name] = { ...conf, status: "planned", url: undefined, channel: undefined };
     }
@@ -204,7 +215,12 @@ const tokenFor = (metadata, name) => {
   const p = metadata.platforms[name];
   const released = p.status === "released";
   const version = `${p.version ?? metadata.version}${p.family === "rn" ? " RN" : ""}`;
-  const label = name === "ios" ? (p.channel === "testflight" ? "加入 TestFlight" : "前往 App Store") : name === "windows" ? "下载安装包" : "下载客户端";
+  const label = {
+    macos: "下载 macOS DMG",
+    windows: p.asset_name?.endsWith(".zip") ? "下载便携 ZIP" : "下载安装包",
+    android: "下载 Android APK",
+    ios: p.channel === "testflight" ? "加入 TestFlight" : "前往 App Store",
+  }[name];
   return {
     badge: released ? version + (name === "ios" ? " 渠道已开放" : " 可下载") : p.family === "rn" ? version + " · 安装包待发布" : "安装包待发布",
     href: released ? p.url : "#build-guide",
@@ -272,6 +288,13 @@ export async function buildSite() {
     html = html.replaceAll("__" + name.toUpperCase() + "_HREF__", escapeHtml(t.href));
     html = html.replaceAll("__" + name.toUpperCase() + "_LABEL__", t.label);
   }
+  const installer = metadata.platforms.windows.installer_url;
+  html = html.replaceAll("__WINDOWS_INSTALLER__", installer
+    ? `<a class="platform-download" data-windows-installer href="${escapeHtml(installer)}" target="_blank" rel="noopener noreferrer">下载安装器</a><p class="download-option-note">运行安装器，按提示安装。</p>`
+    : "");
+  const windows = metadata.platforms.windows;
+  html = html.replaceAll("__WINDOWS_ZIP_NOTE__", windows.status === "released" && windows.asset_name?.endsWith(".zip")
+    ? '<p class="download-option-note">下载 ZIP 后完整解压，再打开 Clarora。</p>' : "");
   html = html.replaceAll("__SITE_VERSION__", metadata.version);
   html = html.replaceAll("__LATEST_URL__", escapeHtml(metadata.latest_url));
   await writeFile(new URL("index.html", out), html);
