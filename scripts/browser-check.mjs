@@ -52,9 +52,33 @@ try {
   // 1) 下载交互:已发布平台使用元数据解析出的下载地址并新标签打开;
   //    待发布平台指向构建指南。
   await page.goto(base, { waitUntil: "networkidle" });
+  const expectedDesktopVersion = `桌面 v${metadata.version}`;
+  if (!(await page.locator(".hero-label").innerText()).includes(expectedDesktopVersion)
+      || !(await page.locator(".download-heading").innerText()).includes(`v${metadata.version}`)) {
+    fail("首页与下载区桌面版本不一致");
+  }
+  for (const mode of ["audio", "video"]) {
+    const card = page.locator(`#${mode}-learning`);
+    const link = card.getByRole("link");
+    await link.click();
+    await page.waitForURL(`**/guide.html#${mode}`);
+    if (!(await page.locator(`#${mode}`).isVisible())) fail(`${mode} 练习入口未打开对应手册章节`);
+    await page.goto(base);
+  }
+  pass("音频与视频练习入口分别直达手册章节");
+  const demo = page.locator("#demo");
+  for (const mode of ["listen", "video"]) {
+    await demo.locator(`#tab-${mode}`).click();
+    const player = demo.locator(`#panel-${mode} video`);
+    const url = await player.getAttribute("src");
+    const response = await page.request.get(new URL(url, base).href);
+    if (!response.ok() || !response.headers()["content-type"]?.startsWith("video/mp4")) fail(`${mode} 演示媒体不可读取`);
+    if (!(await player.isVisible())) fail(`${mode} 演示切换不可见`);
+  }
   const starter = await page.request.get(`${base}/guide.html`);
   if (!(await starter.text()).includes("下载双语字幕 SRT") ||
       !(await page.request.get(`${base}/media/first-listen.srt`)).ok()) fail("入门样例下载缺失");
+
   for (const [name, p] of Object.entries(metadata.platforms)) {
     const link = page.locator(`a[data-download="${name}"]`);
     if (p.status === "released") {

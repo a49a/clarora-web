@@ -17,24 +17,14 @@ $$(".repo-link").forEach((link) => {
 $("#platform-docs").href = `${repo}/blob/HEAD/clarora-gpui/README.md`;
 $("#year").textContent = new Date().getFullYear();
 
-// All demo content is local and illustrative; no AI calls or learner data.
-let playing = false;
-let elapsed = 0;
-let timer;
-const stopPlayback = () => {
-  clearInterval(timer);
-  playing = false;
-  $("#play-demo").textContent = "▶";
-  $("#play-demo").setAttribute("aria-pressed", "false");
-  $("#play-demo").setAttribute("aria-label", "播放字幕进度演示（无音频）");
-};
 function activateDemo(name) {
-  stopPlayback();
   $$("[data-demo]").forEach((button) => {
     const active = button.dataset.demo === name;
     button.setAttribute("aria-selected", String(active));
     button.tabIndex = active ? 0 : -1;
-    $(`#panel-${button.dataset.demo}`).hidden = !active;
+    const panel = $(`#panel-${button.dataset.demo}`);
+    if (!active) panel.querySelector("video").pause();
+    panel.hidden = !active;
   });
 }
 $$("[data-demo]").forEach((button) =>
@@ -51,63 +41,6 @@ function activateTutorial(name) {
 $$("[data-tutorial]").forEach((button) =>
   button.addEventListener("click", () => activateTutorial(button.dataset.tutorial)),
 );
-$("#reveal").addEventListener("click", () => {
-  const answer = $("#word-answer");
-  answer.hidden = !answer.hidden;
-  $("#reveal").setAttribute("aria-expanded", String(!answer.hidden));
-  $("#reveal").textContent = answer.hidden
-    ? "想一想，再看释义 ↗"
-    : "收起释义 ↑";
-});
-$("#favorite").addEventListener("click", (event) => {
-  const button = event.currentTarget;
-  const active = button.getAttribute("aria-pressed") !== "true";
-  button.setAttribute("aria-pressed", String(active));
-  button.setAttribute(
-    "aria-label",
-    active ? "取消收藏示例单词" : "收藏示例单词",
-  );
-  button.textContent = active ? "♥" : "♡";
-});
-for (const [selector, count] of [
-  [".waveform", 40],
-  [".audio-bars", 35],
-]) {
-  const container = $(selector);
-  for (let n = 0; n < count; n++) {
-    const bar = document.createElement("i");
-    bar.style.height = `${8 + Math.abs(Math.sin(n * 1.13) * Math.cos(n * 0.24)) * 32}px`;
-    container.append(bar);
-  }
-}
-const reduceMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)"
-).matches;
-$("#play-demo").addEventListener("click", () => {
-  if (playing) return stopPlayback();
-  if (elapsed >= 8) elapsed = 0;
-  if (reduceMotion) {
-    elapsed = 8;
-    $("#demo-progress").style.width = "100%";
-    $("#demo-time").textContent = "0:08";
-    stopPlayback();
-    return;
-  }
-  playing = true;
-  $("#play-demo").textContent = "Ⅱ";
-  $("#play-demo").setAttribute("aria-pressed", "true");
-  $("#play-demo").setAttribute("aria-label", "暂停字幕进度演示");
-  timer = setInterval(() => {
-    elapsed = Math.min(8, elapsed + 0.1);
-    $("#demo-progress").style.width = `${(elapsed / 8) * 100}%`;
-    $("#demo-time").textContent = `0:0${Math.floor(elapsed)}`;
-    if (elapsed >= 8) stopPlayback();
-  }, 100);
-});
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stopPlayback();
-});
-
 // guides 的 macOS 项与 index.html #build-panel 中无 JS 的默认文案保持同步。
 const guides = {
   macos: {
@@ -176,9 +109,6 @@ $$("[data-download]").forEach((link) => {
     link.href = release.url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = platform === "ios" ? (release.channel === "testflight" ? "加入 TestFlight ↗" : "前往 App Store ↗") : "下载客户端 ↗";
-    $(`[data-status="${platform}"]`).textContent =
-      release.version ? `${release.version}${release.family === "rn" ? " RN" : ""}` : "安装包已发布";
   } else {
     link.addEventListener("click", () => {
       selectPlatform(platform);

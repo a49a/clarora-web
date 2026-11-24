@@ -112,6 +112,9 @@ if (checkDist && fs.existsSync(distIndex)) {
     distMeta = metadata;
   }
   const rendered = read(path.join("dist", "index.html"));
+  const shareImage = rendered.match(/property="og:image" content="https:\/\/a49a\.github\.io\/clarora-web\/([^"]+)"/);
+  if (!shareImage || !fs.existsSync(path.join(root, "dist", shareImage[1]))) fail("首页分享图缺失");
+
   checkPages("dist/");
   const handbook = read("dist/guide.html");
   if (handbook.includes("__SITE_VERSION__") || handbook.includes("__GUIDE_")
